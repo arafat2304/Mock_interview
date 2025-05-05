@@ -2,48 +2,103 @@ import React, { useState } from 'react'
 
 export const SignUp = () => {
 
-  const [fullName,setFullName]=useState("");
-  const [email,setEmail]=useState("");
-  const [password,setPassword]=useState("");
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [profilePic, setProfilePic] = useState(null);
+  const [resume, setResume] = useState(null);
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    console.log("Name:", name);
+    console.log("Email:", email);
+    console.log("Password:", password);
+    console.log("Profile Picture:", profilePic?.name);
+    console.log("Resume:", resume?.name);
+
+    // Here you'd typically handle file uploads and user registration logic
+  };
 
   return (
-    <div className='  flex flex-col items-center justify-center bg-black h-screen '>
-      <div className='card-border border-white py-3 px-3'>
-        <h4 className='text-xl font-semibold text-white flex flex-col items-center justify-center'>Practice Job Interviews with AI</h4>
-      
+    <div className="min-h-screen bg-black flex items-center justify-center px-4 text-white ">
+      <form
+        onSubmit={handleSubmit}
+        className=" my-4 bg-gray-900 border border-gray-600 focus-within:border-white transition-all duration-300 p-6 sm:p-8 rounded-xl shadow-lg w-full max-w-md space-y-5 "
+        encType="multipart/form-data"
+      >
+        <h2 className="text-2xl font-bold text-center">Practice Job Interview With AI</h2>
 
-      <div>
-        <form>
-          <div className='mt-5'>
-          <label class="block text-white mb-3" for="email">Full Name</label>
-          <input type="text" value={fullName}  onChange={(e)=>setFullName(e.target.value)} className='ml-1 w-[400px] mb-3 bg-white text-black px-4 py-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'/>
-          </div>
-          {console.log(fullName)}
-          <div className='mt-1'>
-          <label class="block text-white mb-3" for="email">Email</label>
-          <input type="text" className='ml-1 w-[400px] mb-3 bg-white text-black px-4 py-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'/>
-          </div>
+        <div className="flex flex-col">
+          <label htmlFor="name" className="mb-1">Name</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="bg-white text-black px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter your name"
+            required
+          />
+        </div>
 
-          <div className='mt-1'>
-          <label class="block text-white mb-3" for="email">Password</label>
-          <input type="text" onChange={(e)=>setEmail(e.target.value)} className='ml-1 w-[400px] mb-3 bg-white text-black px-4 py-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'/>
-          </div>
+        <div className="flex flex-col">
+          <label htmlFor="email" className="mb-1">Email</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="bg-white text-black px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Enter your email"
+            required
+          />
+        </div>
 
-          <div className='mt-1'>
-          <label class="block text-white mb-3" for="email">Profile Picture</label>
-          <input type="file" onChange={(e)=>setPassword(e.target.value)} className='ml-1 w-[400px] mb-3 bg-white text-black px-4 py-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'/>
-          </div>
+        <div className="flex flex-col">
+          <label htmlFor="password" className="mb-1">Password</label>
+          <input
+            type="password"
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="bg-white text-black px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Create a password"
+            required
+          />
+        </div>
 
-          <div className='mt-1'>
-          <label class="block text-white mb-3" for="email">Resume</label>
-          <input type="file" className='ml-1 w-[400px] mb-3 bg-white text-black px-4 py-1 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500'/>
-          </div>
+        <div className="flex flex-col">
+          <label htmlFor="profilePic" className="mb-1">Profile Picture</label>
+          <input
+            type="file"
+            id="profilePic"
+            accept="image/*"
+            onChange={(e) => setProfilePic(e.target.files[0])}
+            className="bg-white text-black px-2 py-1 rounded focus:outline-none"
+            required
+          />
+        </div>
 
-          <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition">Submit</button>
-        </form>
-      </div>
-      </div>
+        <div className="flex flex-col">
+          <label htmlFor="resume" className="mb-1">Resume</label>
+          <input
+            type="file"
+            id="resume"
+            accept=".pdf,.doc,.docx"
+            onChange={(e) => setResume(e.target.files[0])}
+            className="bg-white text-black px-2 py-1 rounded focus:outline-none"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition"
+        >
+          Create Your Account
+        </button>
+      </form>
     </div>
-  )
-}
+  );
+};
