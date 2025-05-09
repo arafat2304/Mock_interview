@@ -1,16 +1,24 @@
 import React from 'react'
 import { useState } from 'react';
+import axios from "axios";
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle login logic here
-    console.log("Email:", email);
-    console.log("Password:", password);
+    const userData = {
+      
+    }
   };
+
+  const signin = ()=>{
+    
+  }
 
   return (
     <div className="h-screen bg-black flex items-center justify-center text-white">

@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import axios from "axios";
+import {useNavigate} from "react-router-dom"
 
 export const SignUp = () => {
 
@@ -8,17 +10,35 @@ export const SignUp = () => {
   const [profilePic, setProfilePic] = useState(null);
   const [resume, setResume] = useState(null);
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    console.log("Name:", name);
-    console.log("Email:", email);
-    console.log("Password:", password);
-    console.log("Profile Picture:", profilePic?.name);
-    console.log("Resume:", resume?.name);
-
-    // Here you'd typically handle file uploads and user registration logic
+    register();
   };
+
+  const register = async ()=>{
+    try{
+      const response = await axios.post("http://localhost:5000/user/register",{
+        name,
+        email,
+        password,
+        profilePic,
+        resume
+      },{
+        headers:{
+          "Content-Type":"multipart/form-data"
+        }
+      });
+
+    if(response.status == 201){
+      navigate("/signin")
+    }
+  }catch(error){
+    console.log(error)
+  }
+    
+  }
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center px-4 text-white ">
@@ -76,7 +96,7 @@ export const SignUp = () => {
             accept="image/*"
             onChange={(e) => setProfilePic(e.target.files[0])}
             className="bg-white text-black px-2 py-1 rounded focus:outline-none"
-            required
+            
           />
         </div>
 
@@ -88,7 +108,7 @@ export const SignUp = () => {
             accept=".pdf,.doc,.docx"
             onChange={(e) => setResume(e.target.files[0])}
             className="bg-white text-black px-2 py-1 rounded focus:outline-none"
-            required
+            
           />
         </div>
 
