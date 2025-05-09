@@ -1,24 +1,35 @@
 import React from 'react'
 import { useState } from 'react';
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [valid,setvalid]=useState("");
 
-  
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle login logic here
-    const userData = {
-      
+    try{
+      const response = await axios.post("http://localhost:5000/user/login",{
+      email,
+      password
+    })
+    if(response.status == 200){
+      localStorage.setItem("token",response.data.token);
+      localStorage.setItem("user",JSON.stringify(response.data.user));
+      navigate("/home")
     }
+    
+    }catch(error){
+
+      setvalid(error.response.data.message)
+    }
+    
   };
 
-  const signin = ()=>{
-    
-  }
 
   return (
     <div className="h-screen bg-black flex items-center justify-center text-white">
@@ -55,13 +66,15 @@ export const SignIn = () => {
             placeholder="Enter your password"
           />
         </div>
-
+       
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
         >
           Sign In
         </button>
+        <p className="text-red-500 text-center">{valid}</p>
+        
       </form>
     </div>
   )
