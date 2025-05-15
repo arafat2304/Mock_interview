@@ -1,5 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { dummyInterviews } from '../../constants';
+import InterviewCard from './InterviewCard';
 
 export const Home = () => {
   return (
@@ -34,15 +36,21 @@ export const Home = () => {
 
       <section className='flex flex-col gap-6 mt-8 lg:ml-[200px]'>
           <h2 className='font-bold text-white'>Your Interviews</h2>
+
           <div>
-              <p className='text-white '>You haven't taken any interviews yet</p>
+            {dummyInterviews.map((interview, index) => (
+              <InterviewCard key={index} data={interview} />
+          ))}
+
           </div>
       </section>
 
       <section className='flex flex-col gap-6 mt-8 lg:ml-[200px]'>
           <h2 className='font-bold text-white'>Take an Interview</h2>
            <div>
-              <p className='text-white '>There are no interview Available</p>
+              {dummyInterviews.map((interview, index) => (
+              <InterviewCard key={index} data={interview} />
+          ))}
           </div>
       </section>
 
