@@ -37,7 +37,7 @@ export const Home = () => {
       <section className='flex flex-col gap-6 mt-8 lg:ml-[200px]'>
           <h2 className='font-bold text-white'>Your Interviews</h2>
 
-          <div>
+          <div className='lg:flex flex-row gap-3'>
             {dummyInterviews.map((interview, index) => (
               <InterviewCard key={index} data={interview} />
           ))}
