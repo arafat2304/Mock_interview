@@ -7,10 +7,10 @@ const InterviewCard = ({data}) => {
     const formattedDate =dayjs(data.createdAt || Date.now()).format('MMM D, YYYY');
 
   return (
-    <div className='w-[360px] border-gradient p-0.5 rounded-2xl mt-5  bg-gradient-to-b from-[#4B4D4F] to-[#4B4D4F33]  max-sm:w-full min-h-50'>
+    <div className='relative w-[360px] border-gradient p-0.5 rounded-2xl mt-5  bg-gradient-to-b from-[#4B4D4F] to-[#4B4D4F33]  max-sm:w-full min-h-50'>
         <div>
             <div className=''>
-                <div className=' relative top-0 right-0 w-fit px-4  rounded-bl-lg'><p className='text-white bg-blue-500 p-1 rounded-lg ml-60 lg:ml-67'>{data.type}</p></div>
+                <div className='top-0 right-0 w-fit px-4  rounded-bl-lg'><p className='text-white bg-blue-500 p-1 rounded-lg ml-60 lg:ml-67'>{data.type}</p></div>
                 <img className='rounded-full h-[80px] w-[80px] object-fit ml-5' src={getRandomInterviewCover()}/>
                 <h3 className='text-white mt-2 font-bold text-xl'>{data.role} Interview</h3>
                 <div className='flex flex-row gap-5 mt-3'>
