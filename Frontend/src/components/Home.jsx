@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { dummyInterviews } from '../../constants';
 import InterviewCard from './InterviewCard';
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
+
+  
   return (
     <div className='bg-gradient-to-r from-black via-gray-900 to-black min-h-screen px-6 pt-16'>
       <section className='lg:ml-[200px]  flex flex-col-reverse md:flex-row items-start max-w-5xl mx-auto'>
