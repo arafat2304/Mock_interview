@@ -10,7 +10,10 @@ const PORT=5000;
 connectDB();
 app.use(cors());
 app.use(express.json());
+app.use('/upload', express.static('upload'));
+
 app.use("/user",userRoute);
+
 
 app.get("/",(req,res)=>{
     res.send("Backend is Running ")
