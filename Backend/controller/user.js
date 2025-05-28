@@ -40,6 +40,13 @@ module.exports.login = async (req,res)=>{
             return res.status(401).json({message:"Invalid password"});
         }
         const token = user.generateAuthToken();
+        res.cookie("token", token, {
+            httpOnly: true, // ✅ Prevents JS access (XSS protection)
+            secure: process.env.NODE_ENV === "production", // ✅ Send only over HTTPS in prod
+            sameSite: "Strict", // ✅ Protect against CSRF; or "Lax" for more compatibility
+            maxAge: 24 * 60 * 60 * 1000 // ✅ 1 day in milliseconds
+                });
+
         res.status(200).json({message:"Login successful",token,user});
     }catch(error){
         res.status(500).json({error:error.message});
