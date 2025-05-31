@@ -7,6 +7,7 @@ const connectDB = require("./DB/DB");
 const cors = require("cors");
 const AIRoute = require("./route/AI");
 const cookieParser = require("cookie-parser");
+const path = require("path");
 
 const PORT=5000;
 
