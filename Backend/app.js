@@ -27,6 +27,10 @@ app.get("/",(req,res)=>{
     res.send("Backend is Running ")
 })
 
+// Catch-all: Serve index.html for frontend routes
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../Frontend/dist/index.html"));
+});
 
 
 app.listen(PORT,()=>{

@@ -18,5 +18,5 @@ const upload = multer({storage})
 
 router.post("/register",upload.fields([{name:"profilePic",maxCount:1},{name:"resume",maxCount:1}]),userController.register)
 
-router.post("/login",userController.login);
+router.get("/login",userController.login);
 module.exports=router;
