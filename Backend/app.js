@@ -12,12 +12,11 @@ const PORT=5000;
 
 connectDB();
 app.use(cookieParser());
-app.use(cors({
-  origin: "http://localhost:5000",
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
 app.use('/upload', express.static('upload'));
+
+app.use(express.static(path.join(__dirname, '../Frontend/dist')));
 
 app.use("/user",userRoute);
 app.use("/ai",AIRoute);
