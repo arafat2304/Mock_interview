@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 
 const connectDB = ()=>{
-    mongoose.connect(process.env.MONGODB_URL,)
+    mongoose.connect(process.env.MONGODB_URL,{serverSelectionTimeoutMS: 50000})
     .then(()=>{
         console.log("Database Connected")
     }).catch((err)=>{
