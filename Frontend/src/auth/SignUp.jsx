@@ -19,7 +19,7 @@ export const SignUp = () => {
 
   const register = async ()=>{
     try{
-      const response = await axios.post("http://localhost:5000/user/register",{
+      const response = await axios.post(`${Backend_URL}/user/register`,{
         name,
         email,
         password,

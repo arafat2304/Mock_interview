@@ -42,7 +42,7 @@ const Agent = () => {
         <div className='sm:flex hidden h-[250px] flex-center flex-col gap-2 p-6 bg-gradient-to-b from-gray-800 to-black rounded-lg border-2 border-white border-opacity-50 flex-1 sm:basis-1/2 w-full'>
           <div className='relative size-[120px] flex items-center justify-center md:ml-50'>
             <div className='relative z-10 bg-white rounded-full size-[100px] overflow-hidden'>
-              <img src={`http://localhost:5000/${user.photo}`} alt="User Avatar" className='w-full h-full object-cover rounded-full' />
+              <img src={`${Backend_URL}/${user.photo}`} alt="User Avatar" className='w-full h-full object-cover rounded-full' />
             </div>
           </div>
           <h3 className='text-center text-white mt-3 font-bold'>{user.name}</h3>
