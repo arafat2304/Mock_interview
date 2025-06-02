@@ -9,11 +9,10 @@ export const SignIn = () => {
   const [valid,setvalid]=useState("");
 
   const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try{
-      const response = await axios.post(`${process.env.Backend_URL}/user/login`,{
+      const response = await axios.post(`${import.meta.env.VITE_Backend_URL}/user/login`,{
       email,
       password
     })
@@ -25,7 +24,7 @@ export const SignIn = () => {
     }
     
     }catch(error){
-
+      console.log(error);
       setvalid(error.response.data.message)
     }
     

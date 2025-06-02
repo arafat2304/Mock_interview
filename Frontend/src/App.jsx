@@ -5,6 +5,7 @@ import { SignIn } from './auth/SignIn';
 import { SignUp } from './auth/SignUp';
 import './App.css'
 import Page from './interview/Page';
+import {Logout} from './auth/Logout';
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,6 +18,7 @@ function App() {
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/signin' element={<SignIn/>}/>
         <Route path="/interview" element={<Page/>}/>
+        <Route path="/logout" element={<Logout/>}/>
      </Routes>
     </>
   )

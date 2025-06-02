@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 
 const Agent = () => {
+
+
   const isSpeaking = true;
   let cs = {
     ACTIVE : "ACTIVE",
@@ -11,7 +15,6 @@ const Agent = () => {
   };
 
   const user = JSON.parse(localStorage.getItem("user"));
-  console.log(user.photo);
   const message = [
     "What is your name ?",
     "My name is Arafat Raza, nice to meet you"
@@ -21,6 +24,8 @@ const Agent = () => {
   let [callStatus,setCallStatus] = useState(cs.INACTIVE);
 
   return (
+
+    
     <div className='mt-5 px-4'>
       <h2 className='text-white text-lg font-semibold mb-4'>Interview Generation</h2>
       <div className='flex sm:flex-row flex-col gap-6 items-center justify-center '>
@@ -42,7 +47,7 @@ const Agent = () => {
         <div className='sm:flex hidden h-[250px] flex-center flex-col gap-2 p-6 bg-gradient-to-b from-gray-800 to-black rounded-lg border-2 border-white border-opacity-50 flex-1 sm:basis-1/2 w-full'>
           <div className='relative size-[120px] flex items-center justify-center md:ml-50'>
             <div className='relative z-10 bg-white rounded-full size-[100px] overflow-hidden'>
-              <img src={`${Backend_URL}/${user.photo}`} alt="User Avatar" className='w-full h-full object-cover rounded-full' />
+              <img src={`${import.meta.env.VITE_Backend_URL}/${user.photo}`} alt="User Avatar" className='w-full h-full object-cover rounded-full' />
             </div>
           </div>
           <h3 className='text-center text-white mt-3 font-bold'>{user.name}</h3>
