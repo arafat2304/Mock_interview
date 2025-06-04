@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import vapi from "@vapi-ai/web";
 
-
-const Agent = () => {
-
-
-  const isSpeaking = true;
+const Agent = ({userName,userId,type}) => {
+const vapi2 = new vapi(import.meta.env.VITE_VAPI_PUBLIC_TOKEN);
+  const naviagte = useNavigate();
   let cs = {
     ACTIVE : "ACTIVE",
     CONNECTIG : "CONNECTING",
@@ -14,14 +13,85 @@ const Agent = () => {
     INACTIVE : "INACTIVE"
   };
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const message = [
-    "What is your name ?",
-    "My name is Arafat Raza, nice to meet you"
-  ];
+  const savedMessage = {
+    role : 'user',
+    content: '',
+  };
 
-  const lastMessage = message[message.length-1];
+  const [isSpeaking,setIsSpeaking]=useState(false);
   let [callStatus,setCallStatus] = useState(cs.INACTIVE);
+  const [message,setMessage]=useState([]);
+
+  useEffect(()=>{
+    const onCallStart = () => setCallStatus(cs.ACTIVE);
+    const onCallEnd = () => setCallStatus(cs.FINISHED);
+
+    const onMessage = (messageEvent) => {
+  if (messageEvent.type === 'transcript' && messageEvent.transcriptType === 'final') {
+    const newMessage = {
+      role: messageEvent.role,
+      content: messageEvent.transcript,
+    };
+    setMessage((prev) => [...prev, newMessage]);
+  }
+};
+
+
+    const onSpeechStart = () => setIsSpeaking(true);
+    const onSpeechEnd = () => setIsSpeaking(false);
+
+    const onError = (error) => console.log('error',error);
+
+    vapi2.on('call-start',onCallStart);
+    vapi2.on('call-end',onCallEnd);
+    vapi2.on('message',onMessage);
+    vapi2.on('speech-start',onSpeechStart);
+    vapi2.on('speech-end',onSpeechEnd);
+    vapi2.on('error',onError);
+
+    return () => {
+    vapi2.off('call-start',onCallStart);
+    vapi2.off('call-end',onCallEnd);
+    vapi2.off('message',onMessage);
+    vapi2.off('speech-start',onSpeechStart);
+    vapi2.off('speech-end',onSpeechEnd);
+    vapi2.off('error',onError);
+  }
+  },[]);
+
+  useEffect(()=>{
+    if(callStatus === cs.FINISHED) naviagte('/');
+  },[message,callStatus,type,userId])
+   const handlecall = async () =>{
+        setCallStatus(cs.CONNECTIG);
+        await vapi2.start(import.meta.env.VITE_VAPI_WORKFLOW_ID,{
+          variableValues:{
+            userName,
+            userId
+          }
+        })
+    }
+
+    const handleDisconnect = async () =>{
+      setCallStatus(cs.FINISHED);
+
+      vapi2.stop();
+    }
+
+    const latestMessage = message[message.length-1]?.content;
+    const isCallInactiveOrFinished = callStatus === cs.INACTIVE || callStatus === cs.FINISHED;
+
+  
+  
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  // const message = [
+  //   "What is your name ?",
+  //   "My name is Arafat Raza, nice to meet you"
+  // ];
+
+  // const lastMessage = message[message.length-1];
+ 
 
   return (
 
@@ -58,25 +128,28 @@ const Agent = () => {
       {message.length > 0 && 
         <div className='border border-white rounded-2xl mt-2 md:w-1/2 md:ml-70'>
           <div className='bg-dark-gradient rounded-2xl  min-h-12 px-5 py-3 flex items-center justify-center '>
-            <p key={lastMessage} className='text-lg text-center text-white'>
-              {lastMessage}
+            <p key={latestMessage} className='text-lg text-center text-white'>
+              {latestMessage}
             </p>
           </div>
         </div>}
 
-       <div className="w-full flex justify-center">
+      <div className="w-full flex justify-center">
       {callStatus !== 'ACTIVE' ? (
-        <button className="text-white bg-green-500 py-1 px-10 rounded-full mt-10">
+        <button className="relative text-white bg-green-500 py-1 px-7 mt-5 rounded-xl text-xl font-bold " onClick={handlecall}>
+          <span className={`absolute animate-ping rounded-full opacity-75 ${callStatus !== 'CONNECTING' ? 'hidden' : ''}`} />
           <span>
-            {callStatus === 'INACTIVE' || callStatus === 'FINISHED' ? 'Call' : '...'}
+            {isCallInactiveOrFinished ? 'Call' : '....'}
           </span>
         </button>
       ) : (
-        <button className="text-white bg-red-500 py-1 px-7 rounded-full mt-10">
+        <button className="bg-red-500 text-white py-1 px-7 rounded-full mt-10" onClick={handleDisconnect}>
           End
         </button>
       )}
     </div>
+  
+
   
     </div>
   );

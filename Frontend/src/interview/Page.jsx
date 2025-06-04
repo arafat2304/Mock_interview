@@ -6,6 +6,8 @@ const Page = () => {
   const navigate = useNavigate();
   const [authChecked, setAuthChecked] = useState(false);
 
+
+  const user = JSON.parse(localStorage.getItem('user'));
   useEffect(() => {
     const token = localStorage.getItem('token');
 
@@ -23,7 +25,7 @@ const Page = () => {
   return (
     <div className='bg-black min-h-screen px-6 pt-16'>
       <h3 className='text-white font-bold'>Interview Generation</h3>
-      <Agent />
+      <Agent userName={user?.name} userId={user?._id} type="generate"/>
     </div>
   );
 };
