@@ -31,3 +31,20 @@ module.exports.authUser = async (req, res, next) => {
         return res.status(401).json({ message: "Unauthorized" });
     }
 }
+
+module.exports.authAI = async (req, res, next) => {
+    const {userid} = req.body;
+
+    try{
+
+        const user = await userModel.findById(userid);
+        if (!user) {
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+        req.user = user;
+        next();
+    }catch (error) {
+        console.error("JWT verification error:", error);
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+}

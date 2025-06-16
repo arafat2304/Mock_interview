@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const AIController = require('../controller/AI');
-const { authUser } = require('../middlewear/auth.user');
+const { authAI } = require('../middlewear/auth.user');
 
 
-router.post('/generate', authUser,AIController.generate);
+router.post('/generate', authAI,AIController.generate);
 
 module.exports = router;
