@@ -4,7 +4,6 @@ import { Home } from './components/Home';
 import { SignIn } from './auth/SignIn';
 import { SignUp } from './auth/SignUp';
 import './App.css'
-import Page from './interview/Page';
 import {Logout} from './auth/Logout';
 
 function App() {
@@ -17,7 +16,6 @@ function App() {
         <Route path='/home' element={<Home/>} />
         <Route path='/signup' element={<SignUp/>}/>
         <Route path='/signin' element={<SignIn/>}/>
-        <Route path="/interview" element={<Page/>}/>
         <Route path="/logout" element={<Logout/>}/>
      </Routes>
     </>

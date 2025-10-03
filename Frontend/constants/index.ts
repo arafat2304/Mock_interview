@@ -1,4 +1,3 @@
-import { CreateAssistantDTO } from "@vapi-ai/web/dist/api";
 import { z } from "zod";
 
 export const mappings = {
@@ -97,97 +96,96 @@ export const mappings = {
   "aws amplify": "amplify",
 };
 
-// export const interviewer: CreateAssistantDTO = {
-//   name: "Interviewer",
-//   firstMessage:
-//     "Hello! Thank you for taking the time to speak with me today. I'm excited to learn more about you and your experience.",
-//   transcriber: {
-//     provider: "deepgram",
-//     model: "nova-2",
-//     language: "en",
-//   },
-//   voice: {
-//     provider: "11labs",
-//     voiceId: "sarah",
-//     stability: 0.4,
-//     similarityBoost: 0.8,
-//     speed: 0.9,
-//     style: 0.5,
-//     useSpeakerBoost: true,
-//   },
-//   model: {
-//     provider: "openai",
-//     model: "gpt-4",
-//     messages: [
-//       {
-//         role: "system",
-//         content: `You are a professional job interviewer conducting a real-time voice interview with a candidate. Your goal is to assess their qualifications, motivation, and fit for the role.
+export const interviewer = {
+  name: "Interviewer",
+  firstMessage:
+    "Hello! Thank you for taking the time to speak with me today. I'm excited to learn more about you and your experience.",
+  transcriber: {
+    provider: "deepgram",
+    model: "nova-2",
+    language: "en",
+  },
+  voice: {
+    provider: "11labs",
+    voiceId: "sarah",
+    stability: 0.4,
+    similarityBoost: 0.8,
+    speed: 0.9,
+    style: 0.5,
+    useSpeakerBoost: true,
+  },
+  model: {
+    provider: "openai",
+    model: "gpt-4",
+    messages: [
+      {
+        role: "system",
+        content: `You are a professional job interviewer conducting a real-time voice interview with a candidate. Your goal is to assess their qualifications, motivation, and fit for the role.
 
-// Interview Guidelines:
-// Follow the structured question flow:
-// {{questions}}
+Interview Guidelines:
+Follow the structured question flow:
+{{questions}}
 
-// Engage naturally & react appropriately:
-// Listen actively to responses and acknowledge them before moving forward.
-// Ask brief follow-up questions if a response is vague or requires more detail.
-// Keep the conversation flowing smoothly while maintaining control.
-// Be professional, yet warm and welcoming:
+Engage naturally & react appropriately:
+Listen actively to responses and acknowledge them before moving forward.
+Ask brief follow-up questions if a response is vague or requires more detail.
+Keep the conversation flowing smoothly while maintaining control.
+Be professional, yet warm and welcoming:
 
-// Use official yet friendly language.
-// Keep responses concise and to the point (like in a real voice interview).
-// Avoid robotic phrasing—sound natural and conversational.
-// Answer the candidate’s questions professionally:
+Use official yet friendly language.
+Keep responses concise and to the point (like in a real voice interview).
+Avoid robotic phrasing—sound natural and conversational.
+Answer the candidate’s questions professionally:
 
-// If asked about the role, company, or expectations, provide a clear and relevant answer.
-// If unsure, redirect the candidate to HR for more details.
+If asked about the role, company, or expectations, provide a clear and relevant answer.
+If unsure, redirect the candidate to HR for more details.
 
-// Conclude the interview properly:
-// Thank the candidate for their time.
-// Inform them that the company will reach out soon with feedback.
-// End the conversation on a polite and positive note.
+Conclude the interview properly:
+Thank the candidate for their time.
+Inform them that the company will reach out soon with feedback.
+End the conversation on a polite and positive note.
 
+- Be sure to be professional and polite.
+- Keep all your responses short and simple. Use official language, but be kind and welcoming.
+- This is a voice conversation, so keep your responses short, like in a real conversation. Don't ramble for too long.`,
+      },
+    ],
+  },
+};
 
-// - Be sure to be professional and polite.
-// - Keep all your responses short and simple. Use official language, but be kind and welcoming.
-// - This is a voice conversation, so keep your responses short, like in a real conversation. Don't ramble for too long.`,
-//       },
-//     ],
-//   },
-// };
-
-// export const feedbackSchema = z.object({
-//   totalScore: z.number(),
-//   categoryScores: z.tuple([
-//     z.object({
-//       name: z.literal("Communication Skills"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//     z.object({
-//       name: z.literal("Technical Knowledge"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//     z.object({
-//       name: z.literal("Problem Solving"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//     z.object({
-//       name: z.literal("Cultural Fit"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//     z.object({
-//       name: z.literal("Confidence and Clarity"),
-//       score: z.number(),
-//       comment: z.string(),
-//     }),
-//   ]),
-//   strengths: z.array(z.string()),
-//   areasForImprovement: z.array(z.string()),
-//   finalAssessment: z.string(),
-// });
+export const feedbackSchema = z.object({
+  totalScore: z.number(),
+  categoryScores: z.tuple([
+    z.object({
+      name: z.literal("Communication Skills"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Technical Knowledge"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Problem Solving"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Cultural Fit"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+    z.object({
+      name: z.literal("Confidence and Clarity"),
+      score: z.number(),
+      comment: z.string(),
+    }),
+  ]),
+  strengths: z.array(z.string()),
+  areasForImprovement: z.array(z.string()),
+  finalAssessment: z.string(),
+});
 
 export const interviewCovers = [
   "/adobe.png",
@@ -200,12 +198,11 @@ export const interviewCovers = [
   "/skype.png",
   "/spotify.png",
   "/telegram.png",
-
   "/tiktok.png",
   "/yahoo.png",
 ];
 
-export const dummyInterviews=[
+export const dummyInterviews = [
   {
     id: "1",
     userId: "user1",
@@ -231,216 +228,191 @@ export const dummyInterviews=[
 ];
 
 export const generator = {
-  "name": "jsm_interview_prep",
-  "nodes": [
+  name: "Generate Interview",
+  nodes: [
     {
-      "name": "introduction",
-      "type": "conversation",
-      "isStart": true,
-      "metadata": {
-        "position": {
-          "x": -398.99601037931205,
-          "y": -162.2473564826543
-        }
-      },
-      "prompt": "Greet the user and help them create a new AI interview",
-      "model": {
-        "model": "gpt-4o",
-        "provider": "openai",
-        "maxTokens": 1000,
-        "temperature": 0.7
-      },
-      "variableExtractionPlan": {
-        "output": [
-          {
-            "enum": [],
-            "type": "string",
-            "title": "level",
-            "description": "The job experience level"
-          },
-          {
-            "enum": [],
-            "type": "string",
-            "title": "role",
-            "description": "what role would you like to train for?"
-          },
-          {
-            "enum": [],
-            "type": "string",
-            "title": "type",
-            "description": "Are you aiming for Technical, Behavioral, or mixed interview?"
-          },
-          {
-            "enum": [],
-            "type": "string",
-            "title": "techstack",
-            "description": "A list of technologies to cover the during of job interview"
-          },
-          {
-            "enum": [],
-            "type": "string",
-            "title": "amount",
-            "description": "How many questions would you like me to prepare for you?"
-          }
-        ]
-      },
-      "messagePlan": {
-        "firstMessage": "Hey there!"
-      }
-    },
-    {
-      "name": "conversation_1748933107764",
-      "type": "conversation",
-      "metadata": {
-        "position": {
-          "x": -397.22389894579146,
-          "y": 156.4883009290342
-        }
-      },
-      "prompt": "Say that the interview will be generated shortly.",
-      "model": {
-        "model": "gpt-4o",
-        "provider": "openai",
-        "maxTokens": 1000,
-        "temperature": 0.7
-      },
-      "messagePlan": {
-        "firstMessage": ""
-      }
-    },
-    {
-      "name": "API Request",
-      "type": "tool",
-      "metadata": {
-        "position": {
-          "x": -397.22389894579146,
-          "y": 406.4883009290342
-        }
-      },
-      "tool": {
-        "url": "https://ai-mock-interview-backend-cs6x.onrender.com/ai/generate",
-        "body": {
-          "type": "object",
-          "required": [
-            "techstack",
-            "role",
-            "level",
-            "type",
-            "amount",
-            "userid"
-          ],
-          "properties": {
-            "role": {
-              "type": "string",
-              "value": "{{role}}",
-              "description": ""
-            },
-            "type": {
-              "type": "string",
-              "value": "{{type}}",
-              "description": ""
-            },
-            "level": {
-              "type": "string",
-              "value": "{{level}}",
-              "description": ""
-            },
-            "amount": {
-              "type": "string",
-              "value": "{{amount}}",
-              "description": ""
-            },
-            "userid": {
-              "type": "string",
-              "value": "{{userid}}",
-              "description": ""
-            },
-            "techstack": {
-              "type": "string",
-              "value": "{{techstack}}",
-              "description": ""
-            }
-          }
+      name: "start",
+      type: "conversation",
+      isStart: true,
+      metadata: {
+        position: {
+          x: 0,
+          y: 0,
         },
-        "type": "apiRequest",
-        "method": "POST",
-        "function": {
-          "name": "untitled_tool",
-          "parameters": {
-            "type": "object",
-            "required": [],
-            "properties": {}
-          }
-        }
-      }
+      },
+      prompt: "Speak first. Greet the user and help them create a new AI Interviewer",
+      voice: {
+        model: "aura-2",
+        voiceId: "thalia",
+        provider: "deepgram",
+      },
+      variableExtractionPlan: {
+        output: [
+          {
+            title: "level",
+            description: "The job experience level.",
+            type: "string",
+            enum: ["entry", "mid", "senior"],
+          },
+          {
+            title: "amount",
+            description: "How many questions would you like to generate?",
+            type: "number",
+            enum: [],
+          },
+          {
+            title: "techstack",
+            description: "A list of technologies to cover during the job interview.",
+            type: "string",
+            enum: [],
+          },
+          {
+            title: "role",
+            description: "What role would you like to train for?",
+            type: "string",
+            enum: [],
+          },
+          {
+            title: "type",
+            description: "What type of the interview should it be?",
+            type: "string",
+            enum: ["behavioural", "technical", "mixed"],
+          },
+        ],
+      },
     },
     {
-      "name": "conversation_1748934390935",
-      "type": "conversation",
-      "metadata": {
-        "position": {
-          "x": -397.22389894579146,
-          "y": 656.4883009290343
-        }
+      name: "apiRequest_1747470739045",
+      type: "apiRequest",
+      metadata: {
+        position: {
+          x: -16.075937072883846,
+          y: 703.623428447121,
+        },
       },
-      "prompt": "thank the user for their time and informing them that the interview has been generated successfully.",
-      "model": {
-        "model": "gpt-4o",
-        "provider": "openai",
-        "maxTokens": 1000,
-        "temperature": 0.7
+      method: "POST",
+      url: `https://ai-mock-interview-backend-cs6x.onrender.com/ai/generate`,
+      headers: {
+        type: "object",
+        properties: {},
       },
-      "messagePlan": {
-        "firstMessage": ""
-      }
+      body: {
+        type: "object",
+        properties: {
+          role: {
+            type: "string",
+            description: "",
+            value: "{{ role }}",
+          },
+          level: {
+            type: "string",
+            description: "",
+            value: "{{ level }}",
+          },
+          type: {
+            type: "string",
+            description: "",
+            value: "{{ type }}",
+          },
+          amount: {
+            type: "number",
+            description: "",
+            value: "{{ amount }}",
+          },
+          userid: {
+            type: "string",
+            description: "",
+            value: "{{ userid }}",
+          },
+          techstack: {
+            type: "string",
+            description: "",
+            value: "{{ techstack }}",
+          },
+        },
+      },
+      output: {
+        type: "object",
+        properties: {},
+      },
+      mode: "blocking",
+      hooks: [],
     },
     {
-      "name": "hangup_1748934787591",
-      "type": "tool",
-      "metadata": {
-        "position": {
-          "x": -396.4945990682518,
-          "y": 921.7000842827777
-        }
+      name: "conversation_1747721261435",
+      type: "conversation",
+      metadata: {
+        position: {
+          x: -17.547788169718615,
+          y: 1003.3409337989506,
+        },
       },
-      "tool": {
-        "type": "endCall"
-      }
-    }
+      prompt: "Thank the user for the conversation and inform them that the interview was generated successfully.",
+      voice: {
+        provider: "deepgram",
+        voiceId: "thalia",
+        model: "aura-2",
+      },
+    },
+    {
+      name: "conversation_1747744490967",
+      type: "conversation",
+      metadata: {
+        position: {
+          x: -11.165436030430953,
+          y: 484.94857971060617,
+        },
+      },
+      prompt: "Say that the Interview will be generated shortly.",
+      voice: {
+        provider: "deepgram",
+        voiceId: "thalia",
+        model: "aura-2",
+      },
+    },
+    {
+      name: "hangup_1747744730181",
+      type: "hangup",
+      metadata: {
+        position: {
+          x: 76.01267674000721,
+          y: 1272.0665127156606,
+        },
+      },
+    },
   ],
-  "edges": [
+  edges: [
     {
-      "from": "introduction",
-      "to": "conversation_1748933107764",
-      "condition": {
-        "type": "ai",
-        "prompt": "if user provided all the required variables"
-      }
+      from: "apiRequest_1747470739045",
+      to: "conversation_1747721261435",
+      condition: {
+        type: "ai",
+        prompt: "",
+      },
     },
     {
-      "from": "conversation_1748933107764",
-      "to": "API Request",
-      "condition": {
-        "type": "ai",
-        "prompt": ""
-      }
+      from: "start",
+      to: "conversation_1747744490967",
+      condition: {
+        type: "ai",
+        prompt: "If user provided all the required variables",
+      },
     },
     {
-      "from": "API Request",
-      "to": "conversation_1748934390935",
-      "condition": {
-        "type": "ai",
-        "prompt": ""
-      }
+      from: "conversation_1747744490967",
+      to: "apiRequest_1747470739045",
+      condition: {
+        type: "ai",
+        prompt: "",
+      },
     },
     {
-      "from": "conversation_1748934390935",
-      "to": "hangup_1748934787591",
-      "condition": {
-        "type": "ai",
-        "prompt": ""
-      }
-    }
+      from: "conversation_1747721261435",
+      to: "hangup_1747744730181",
+      condition: {
+        type: "ai",
+        prompt: "",
+      },
+    },
   ],
-  "globalPrompt": ""
-}
+};

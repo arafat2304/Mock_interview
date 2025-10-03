@@ -44,26 +44,71 @@ export const Home = () => {
         </div>
       </section>
 
-      <section className='flex flex-col gap-6 mt-8 lg:ml-[200px]'>
-          <h2 className='font-bold text-white'>Your Interviews</h2>
+      {/*features section*/}
 
-          <div className='lg:flex flex-row gap-3'>
-            {dummyInterviews.map((interview, index) => (
-              <InterviewCard key={index} data={interview} />
-          ))}
+      <div className='mt-20 max-w-5xl mx-auto'>
+        <h2 className='text-center text-2xl md:text-3xl font-bold text-white mb-10'> Features</h2>
 
+        <div className='flex flex-col md:flex-row justify-center items-stretch gap-8'>
+           {/* Card 1 */}
+          <div className='flex-1 bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-blue-500/20 transition text-center'>
+            <div className="text-4xl">🎯</div>
+            <h3 className="mt-4 text-xl font-semibold text-white">AI-Generated Questions</h3>
+            <p className="mt-2 text-gray-400">Get interview questions tailored to your role & experience.</p>
           </div>
-      </section>
+       
+      
 
-      <section className='flex flex-col gap-6 mt-8 lg:ml-[200px]'>
-          <h2 className='font-bold text-white'>Take an Interview</h2>
-           <div>
-              {dummyInterviews.map((interview, index) => (
-              <InterviewCard key={index} data={interview} />
-          ))}
-          </div>
-      </section>
+      {/* Card 2 */}
+    <div className="flex-1 bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-blue-500/20 transition text-center">
+      <div className="text-4xl">🎤</div>
+      <h3 className="mt-4 text-xl font-semibold text-white">Voice Interaction</h3>
+      <p className="mt-2 text-gray-400">
+        Answer with your voice just like in a real interview.
+      </p>
+    </div>
 
+     {/* Card 3 */}
+    <div className="flex-1 bg-gray-800 p-6 rounded-2xl shadow-lg hover:shadow-blue-500/20 transition text-center">
+      <div className="text-4xl">📊</div>
+      <h3 className="mt-4 text-xl font-semibold text-white">Instant Feedback</h3>
+      <p className="mt-2 text-gray-400">
+        Get instant reports with scores & suggestions for improvement.
+      </p>
+    </div>
+     </div>
+    </div>
+
+    {/* Testimonials Section */}
+    <div className='mt-20 max-w-5xl mx-auto'> 
+      <h2 className='text-center text-2xl md:text-3xl font-bold text-white mb-10'> What Our Users Say </h2>
+      <div className='flex flex-col md:flex-row gap-8'>
+
+         {/* Testimonial 1 */}
+      <div className='flex-1 bg-gray-900 p-6 rounded-2xl shadow-lg text-center'>
+          <p className='text-gray-300 italic'>“This mock interview platform gave me the confidence I needed before my real interviews.”</p>
+          <h3 className='mt-4 font-semibold text-white'>— Aisha, Software Engineer</h3>
+      </div>
+      
+
+      {/* Testimonial 2 */}
+    <div className="flex-1 bg-gray-900 p-6 rounded-2xl shadow-lg text-center">
+      <p className="text-gray-300 italic">
+        “I loved the instant feedback. It showed me exactly where I needed to improve.”
+      </p>
+      <h3 className="mt-4 font-semibold text-white">— Rahul, Full-Stack Developer</h3>
+    </div>
+
+    {/* Testimonial 3 */}
+    <div className="flex-1 bg-gray-900 p-6 rounded-2xl shadow-lg text-center">
+      <p className="text-gray-300 italic">
+        “The voice interaction made it feel just like a real interview. Highly recommended!”
+      </p>
+      <h3 className="mt-4 font-semibold text-white">— Emily, Data Analyst</h3>
+    </div>
+    
+    </div>
+    </div>
     </div>
   );
 };
