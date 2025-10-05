@@ -1,7 +1,5 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { dummyInterviews } from '../../constants';
-import InterviewCard from './InterviewCard';
 import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
@@ -16,7 +14,7 @@ export const Home = () => {
   
   return (
     <div className='bg-gradient-to-r from-black via-gray-900 to-black min-h-screen px-6 pt-16'>
-      <section className='lg:ml-[200px]  flex flex-col-reverse md:flex-row items-start max-w-5xl mx-auto'>
+      <section className='lg:ml-[200px]  flex flex-col-reverse md:flex-row items-start max-w-6xl mx-auto'>
         
         {/* Left: Text Content */}
         <div className='flex flex-col gap-4 max-w-lg text-center md:text-left'>
@@ -27,7 +25,7 @@ export const Home = () => {
             Practice on real interview questions & get instant feedback
           </p>
           <Link
-            to="/interview"
+            to="/interview-page"
             className='bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full transition duration-300 w-fit mx-auto md:mx-0'
           >
             Start an Interview
@@ -46,7 +44,7 @@ export const Home = () => {
 
       {/*features section*/}
 
-      <div className='mt-20 max-w-5xl mx-auto'>
+      <div className='mt-15 max-w-5xl mx-auto'>
         <h2 className='text-center text-2xl md:text-3xl font-bold text-white mb-10'> Features</h2>
 
         <div className='flex flex-col md:flex-row justify-center items-stretch gap-8'>
