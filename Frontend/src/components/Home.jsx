@@ -3,14 +3,6 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
-
-  const navigate = useNavigate();
-  useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) {
-      navigate('/signin');
-    }
-  }, [navigate]);
   
   return (
     <div className='bg-gradient-to-r from-black via-gray-900 to-black min-h-screen px-6 pt-16'>

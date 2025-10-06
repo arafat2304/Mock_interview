@@ -22,10 +22,10 @@ const Navbar = () => {
       {/* Right: Buttons */}
       <div className="flex items-center space-x-4">
         <button className="hidden md:block px-5 py-2 rounded-xl bg-transparent border border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white transition">
-          Login
+         <a href="/signIn">Login</a>
         </button>
         <button className=" hidden md:block px-5  py-2 rounded-xl bg-blue-600 hover:bg-blue-700 transition font-semibold">
-          Start Interview
+          <a href="/interview-page">Start Interview</a>
         </button>
 
         {/* Mobile Hamburger */}
@@ -43,7 +43,7 @@ const Navbar = () => {
           <li><a href="/about" className="hover:text-blue-400 cursor-pointer transition">About</a></li>
           <li><a href="/history" className="hover:text-blue-400 cursor-pointer transition">History</a></li>
           <li className="hover:text-blue-400 cursor-pointer transition">Contact</li>
-          <li className="hover:text-blue-400 cursor-pointer transition">Login</li>
+          <li><a href="/signUp" className="hover:text-blue-400 cursor-pointer transition">Login</a></li>
         </ul>
       )}
     </nav>
