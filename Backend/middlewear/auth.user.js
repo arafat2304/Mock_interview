@@ -33,8 +33,9 @@ module.exports.authUser = async (req, res, next) => {
 }
 
 module.exports.authAI = async (req, res, next) => {
-    const {userid} = req.body;
 
+    const userid = req.body.user._id;
+    
     try{
 
         const user = await userModel.findById(userid);

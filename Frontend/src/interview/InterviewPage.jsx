@@ -1,17 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function InterviewPage() {
   const navigate = useNavigate();
-
- const user = JSON.parse(sessionStorage.getItem('user'));
- const userPhotoPath = user.photo
- const backendURL = "http://localhost:5000/"; // your backend base URL
- const userPhoto = userPhotoPath
-  ? `${backendURL}${userPhotoPath.replace("\\", "/")}`
-  : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-
- console.log(user)
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (!token) {
@@ -19,13 +11,20 @@ function InterviewPage() {
     }
   }, [navigate]);
 
+  const user = JSON.parse(sessionStorage.getItem('user'));
+ const userPhotoPath = user?.photo
+ const backendURL = "http://localhost:5000/"; // your backend base URL
+ const userPhoto = userPhotoPath
+  ? `${backendURL}${userPhotoPath.replace("\\", "/")}`
+  : "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
   // State for interview setup
-  const [isInterviewStarted, setIsInterviewStarted] = useState(false);
   const [formData, setFormData] = useState({
     role: "",
     experience: "",
     type: "Technical",
     questionCount: "",
+    techStack:""
   });
 
   // Handle form input
@@ -34,20 +33,29 @@ function InterviewPage() {
   };
 
   // When "Generate Interview" is clicked
-  const handleStartInterview = () => {
+  const handleStartInterview = async () => {
     if (!formData.role || !formData.experience || !formData.questionCount) {
-      alert("Please fill all fields!");
-      return;
+      alert("Please fill all fields!") 
+    }else{
+      try{
+        const response =await  axios.post("http://localhost:5000/ai/generate",{
+          formData,
+          user
+        })
+        
+        if(response.status==201){
+          navigate("/interview")
+        }
+      }catch(e){
+        console.log(e);
+      }
     }
-    // Later we’ll call backend (Gemini) here
-    setIsInterviewStarted(true);
+  
   };
   
 
   return (
     <div className="min-h-screen flex flex-col justify-center items-center bg-gray-900 text-white pt-0 p-6 ">
-      {!isInterviewStarted ? (
-        // ---------------- Setup Form ----------------
         <div className="w-full max-w-lg bg-gray-800 p-6 rounded-2xl shadow-lg ">
           <h2 className="text-2xl font-bold text-center mb-6">
             🎯 Start Your AI Interview
@@ -62,6 +70,16 @@ function InterviewPage() {
               onChange={handleChange}
               className="p-3 rounded-lg bg-gray-700 outline-none"
             />
+
+              <input
+                type="text"
+                name="techStack"
+                placeholder="Enter Tech Stack (e.g. React, Node.js, MongoDB)"
+                value={formData.techStack}
+                onChange={handleChange}
+                className="p-3 rounded-lg bg-gray-700 outline-none"
+              />
+
 
             <input
               type="text"
@@ -100,31 +118,7 @@ function InterviewPage() {
             </button>
           </div>
         </div>
-      ) : (
-        // ---------------- Interview Screen ----------------
-        <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-2xl shadow-lg flex justify-between items-center">
-          {/* Left (AI) */}
-          <div className="flex flex-col items-center gap-4 w-1/2">
-            <img
-              src="logo.png"
-              alt="AI Interviewer"
-              className="w-40 h-40 rounded-full border-4 border-blue-500 cover-object"
-            />
-            <p className="text-xl font-semibold">AI Interviewer</p>
-          </div>
-
-          {/* Right (User) */}
-          <div className="flex flex-col items-center gap-4 w-1/2">
-            <img
-              src={userPhoto}
-              alt="User"
-              className="w-40 h-40 rounded-full border-4 border-green-500"
-            />
-            <p className="text-xl font-semibold">{user.name}</p>
-          </div>
         </div>
-      )}
-    </div>
   );
 }
 
