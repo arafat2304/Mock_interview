@@ -6,7 +6,7 @@ require("dotenv").config(); // Make sure this is called before accessing process
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENERATIVE_AI_API_KEY);
 
 module.exports.generate = async (req, res) => {
-  console.log(req.body.formData)
+
   const { type, role, experience, techStack, questionCount } = req.body.formData;
   const userId = req.user._id; // Assuming req.user is set by authUser middleware
 
@@ -44,7 +44,7 @@ module.exports.generate = async (req, res) => {
       amount:questionCount,
       questions,
       createdAt: new Date(),
-      finalized: true
+      finalized: false
     });
 
     await interview.save();
@@ -56,3 +56,30 @@ res.status(201).json({success: true, message: "Interview questions saved success
     res.status(500).json({ success: false, error: error.message });
   }
 };
+
+// Example: add answer to existing interview
+module.exports.saved = async (req,res) => {
+  console.log("hi")
+    try {
+    const { userId, answer } = req.body;
+    if(!userId || !answer){
+      res.status(201).json("all field required");
+    }
+    
+    // Find the latest interview of this user that is not finalized
+    const interview = await Interview.findOne({ userId, finalized:false}).sort({ createdAt: -1 });
+    
+    if (!interview) return res.status(404).json({ error: "Interview not found" });
+
+    // Push the answer into the answers array
+    interview.answers.push(answer);
+    await interview.save();
+    console.log(answer)
+
+    res.status(201).json({ success: true, message: "Answer saved" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to save answer" });
+  }
+   
+}

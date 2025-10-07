@@ -21,6 +21,8 @@ app.use("/user",userRoute);
 app.use("/ai",AIRoute);
 
 
+
+
 app.get("/",(req,res)=>{
     res.send("Backend is Running ")
 })

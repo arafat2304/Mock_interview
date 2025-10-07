@@ -32,6 +32,10 @@ const interviewSchema = new mongoose.Schema({
         type: [String],
         required: true
     },
+    answers: {               // <-- Add this field
+        type: [String],
+        default: []           // Initialize as empty array
+    },
     createdAt: {
         type: Date,
         default: Date.now
