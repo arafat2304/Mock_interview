@@ -44,7 +44,8 @@ function InterviewPage() {
         })
         
         if(response.status==201){
-          navigate("/interview")
+          const generatedQuestions = response.data.questions;
+          navigate("/interview",{state:{questions:generatedQuestions,userId:user._id}});
         }
       }catch(e){
         console.log(e);
