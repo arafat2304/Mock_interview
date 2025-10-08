@@ -12,6 +12,7 @@ function InterviewPage() {
   }, [navigate]);
 
   const user = JSON.parse(sessionStorage.getItem('user'));
+  const userId = user._id;
  const userPhotoPath = user?.photo
  const backendURL = "http://localhost:5000/"; // your backend base URL
  const userPhoto = userPhotoPath
@@ -40,7 +41,7 @@ function InterviewPage() {
       try{
         const response =await  axios.post("http://localhost:5000/ai/generate",{
           formData,
-          user
+          userId
         })
         
         if(response.status==201){

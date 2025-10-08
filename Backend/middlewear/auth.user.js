@@ -33,8 +33,8 @@ module.exports.authUser = async (req, res, next) => {
 }
 
 module.exports.authAI = async (req, res, next) => {
-
-    const userid = req.body.user._id;
+    
+    const userid = req.body.userId;
     
     try{
 

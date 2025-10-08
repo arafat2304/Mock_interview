@@ -10,6 +10,7 @@ import Navbar from './components/Navbar';
 import History from './components/History';
 import InterviewPage from './interview/InterviewPage';
 import InterviewLanding from './interview/InterviewLanding';
+import Feedback from './interview/Feedback';
 function App() {
   const [count, setCount] = useState(0)
 
@@ -26,6 +27,7 @@ function App() {
         <Route path='/history' element={<History/>} />
         <Route path='/interview-page' element={<InterviewPage/>} />
         <Route path='/interview' element={<InterviewLanding/>} />
+        <Route path='/feedback' element={<Feedback/>} />
      </Routes>
     </>
   )

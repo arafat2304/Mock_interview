@@ -6,6 +6,10 @@ const { authAI } = require('../middlewear/auth.user');
 
 router.post('/generate', authAI,AIController.generate);
 
-router.post("/answer",AIController.saved)
+router.post("/answer",authAI,AIController.saved);
+
+router.post("/evaluate",authAI,AIController.evalution);
+
+router.get("/interviews",authAI,AIController.interviews)
 
 module.exports = router;
