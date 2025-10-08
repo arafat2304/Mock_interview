@@ -6,14 +6,14 @@ export const Logout =()=>{
 
     const navigate = useNavigate();
     useEffect(() => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (!token) {
       navigate('/signin');
     }
 
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/signin');
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('user');
+    navigate('/home');
   },[]);
 
   return (
