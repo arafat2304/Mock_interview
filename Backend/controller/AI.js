@@ -50,7 +50,7 @@ module.exports.generate = async (req, res) => {
 
     await interview.save();
    await interview.save();
-res.status(201).json({success: true, message: "Interview questions saved successfully.", questions});
+res.status(201).json({success: true, message: "Interview questions saved successfully.", questions,interviewId:interview._id});
 
   } catch (error) {
     console.error(error);
@@ -85,74 +85,112 @@ module.exports.saved = async (req,res) => {
 }
 
 module.exports.evalution = async (req,res) =>{
+  console.log(req.body)
   
-    try {
-    const { userId, questions, answers } = req.body;
+   try {
+  const { userId, questions, answers ,interviewId} = req.body;
 
-    if (!userId || !questions || !answers || questions.length !== answers.length)
-      return res.status(400).json({ error: "Invalid input" });
+  if (!interviewId || !userId || !questions || !answers || questions.length !== answers.length) {
+    return res.status(400).json({ error: "Invalid input" });
+  }
 
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-001" });
+  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-001" });
 
-    // 1️⃣ Prompt for Gemini AI
-    const prompt = `
+  // 🧠 Prompt for Gemini AI
+  const prompt = `
 You are an interview evaluator. Here are the questions and the user's answers:
 ${questions.map((q, i) => `Q${i + 1}: ${q}\nA${i + 1}: ${answers[i]}`).join("\n")}
 
 Evaluate each answer from 0 to 10 based on clarity, completeness, relevance, and confidence.
-Provide a feedback for each question.
+Provide a short feedback for each question.
 Also provide an overall score out of 100 and overall feedback.
-Return the response in object  format like this:
+Return ONLY a pure JSON object like this (no extra text or explanation):
+
 {
-  overall_score: 85,
-  overall_feedback: "Good understanding, but needs more depth.",
-  "questions: [
-    { question: "Question text", score: 9, feedback: "Short feedback" }
+  "overall_score": 85,
+  "overall_feedback": "Good understanding, but needs more depth.",
+  "questions": [
+    { "question": "Question text", "score": 9, "feedback": "Short feedback" }
   ]
 }
 `;
 
-    const aiResponse = await model.generateContent(prompt);
-    console.log(aiResponse)
+  // 🔹 Generate AI response
+  const aiResponse = await model.generateContent(prompt);
+  const aiText = aiResponse.response.text();
 
-    // 2️⃣ Parse AI JSON response
-    let evaluation;
-    try {
-      // const aiText = geminiResponse.response.text(); // call the function
-      // let evaluation;
-      // evaluation = JSON.parse(aiText);
-      // console.log(evaluation)
-    } catch (err) {
-      console.error("Error parsing AI response:", err);
-      return res.status(500).json({ error: "Invalid AI response format" });
-    }
+  // 🧹 Clean the output before parsing
+  let cleanText = aiText
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .replace(/[\u0000-\u001F]+/g, "") // remove control chars
+    .trim();
 
-    // 3️⃣ Save interview
-    const newInterview = await InterviewModel.create({
-      userId,
-      questions,
-      answers,
-      score: evaluation.overall_score,
-      feedback: evaluation.overall_feedback,
-      questionFeedback: evaluation.questions.map((q, i) => ({
-        question: q.question,
-        answer: answers[i],
-        score: q.score,
-        feedback: q.feedback,
-      })),
+  // 🪄 Extract only the JSON portion using regex
+  const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+  if (!jsonMatch) {
+    return res.status(500).json({
+      error: "No JSON object found in AI response",
+      raw: aiText,
     });
-
-    res.status(201).json(newInterview);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
   }
+
+  cleanText = jsonMatch[0];
+
+  // 🩹 Try to fix common JSON issues (like trailing commas)
+  cleanText = cleanText
+    .replace(/,\s*}/g, "}") // remove trailing commas before }
+    .replace(/,\s*]/g, "]"); // remove trailing commas before ]
+
+  let evaluation;
+  try {
+    evaluation = JSON.parse(cleanText);
+    console.log("✅ Parsed Evaluation:", evaluation);
+  } catch (err) {
+    console.error("❌ Still invalid JSON after cleanup:", err);
+    return res.status(500).json({
+      error: "Invalid AI response format after cleanup",
+      raw: cleanText,
+    });
+  }
+   const latestInterview = await Interview.findById(interviewId);
+    console.log(latestInterview)
+   if (!latestInterview) {
+    return res.status(404).json({ error: "No interview found for this user" });
+  }
+
+  // ✅ Save interview results to DB
+  latestInterview.questions = questions;
+  latestInterview.answers = answers;
+  latestInterview.score = evaluation.overall_score;
+  latestInterview.feedback = evaluation.overall_feedback;
+  latestInterview.questionFeedback = evaluation.questions.map((q, i) => ({
+    question: q.question,
+    answer: answers[i],
+    score: q.score,
+    feedback: q.feedback,
+  }));
+
+  await latestInterview.save();
+
+   res.status(200).json({
+    message: "Interview evaluation updated successfully",
+    interview: latestInterview,
+  });
+
+
+} catch (err) {
+  console.error("🔥 Server Error:", err);
+  res.status(500).json({ error: err.message });
+}
+
+
 }
 
 module.exports.interviews = async () =>{
   const { userId } = req.query;
   try {
-    const history = await InterviewModel.find({ userId }).sort({ date: -1 });
+    const history = await Interview.find({ userId }).sort({ date: -1 });
     res.json(history);
   } catch (err) {
     res.status(500).json({ error: err.message });

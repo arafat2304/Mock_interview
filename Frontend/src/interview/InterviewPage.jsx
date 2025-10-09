@@ -43,10 +43,10 @@ function InterviewPage() {
           formData,
           userId
         })
-        
+        console.log(response)
         if(response.status==201){
           const generatedQuestions = response.data.questions;
-          navigate("/interview",{state:{questions:generatedQuestions,userId:user._id}});
+          navigate("/interview",{state:{questions:generatedQuestions,userId:user._id,interviewId: response.data.interviewId}});
         }
       }catch(e){
         console.log(e);

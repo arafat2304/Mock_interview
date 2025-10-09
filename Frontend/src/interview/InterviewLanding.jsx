@@ -7,6 +7,8 @@ function Interview() {
   const navigate = useNavigate();
   const questions = location.state?.questions || [];
   const userId = location.state?.userId || "guest";
+  const interviewId = location.state?.interviewId;
+  console.log(interviewId)
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
@@ -127,12 +129,12 @@ function Interview() {
     } else {
        try {
     const res = await axios.post(`http://localhost:5000/ai/evaluate`, {
+      interviewId,
       userId,
       questions,
       answers: [...answers, currentTranscript.trim()],
     });
 
-    console.log("Interview evaluated:", res.data);
       alert("Interview completed! ✅");
     // Navigate to feedback page with AI evaluation
     navigate("/feedback", { state: { interview: res.data } });
