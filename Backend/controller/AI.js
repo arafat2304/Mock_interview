@@ -153,31 +153,33 @@ Return ONLY a pure JSON object like this (no extra text or explanation):
       raw: cleanText,
     });
   }
-   const latestInterview = await Interview.findById(interviewId);
-    console.log(latestInterview)
-   if (!latestInterview) {
-    return res.status(404).json({ error: "No interview found for this user" });
-  }
+  //  const latestInterview = await Interview.findById(interviewId);
+    
+  //  if (!latestInterview) {
+  //   return res.status(404).json({ error: "No interview found for this user" });
+  // }
 
-  // ✅ Save interview results to DB
-  latestInterview.questions = questions;
-  latestInterview.answers = answers;
-  latestInterview.score = evaluation.overall_score;
-  latestInterview.feedback = evaluation.overall_feedback;
-  latestInterview.questionFeedback = evaluation.questions.map((q, i) => ({
-    question: q.question,
-    answer: answers[i],
-    score: q.score,
-    feedback: q.feedback,
-  }));
 
-  await latestInterview.save();
+// 🔹 Atomic update
+    const updatedInterview  = await Interview.findByIdAndUpdate(
+  interviewId,                  // document ID to update
+  {
+       // new array
+    score: 85,                  // updated score
+    feedback: "Good job!",      // updated feedback
+  },
+  { new: true, runValidators: true } // return updated document & validate
+);
 
-   res.status(200).json({
-    message: "Interview evaluation updated successfully",
-    interview: latestInterview,
-  });
 
+    if (!updatedInterview) {
+      return res.status(404).json({ error: "Interview not found" });
+    }
+
+    res.status(200).json({
+      message: "Interview evaluation updated successfully",
+      interview: updatedInterview,
+    })
 
 } catch (err) {
   console.error("🔥 Server Error:", err);
@@ -196,3 +198,54 @@ module.exports.interviews = async () =>{
     res.status(500).json({ error: err.message });
   }
 }
+
+
+
+// module.exports.add = async (req, res) => {
+//   try {
+//     const {
+//       userId,
+//       role,
+//       level,
+//       techStack,
+//       type,
+//       amount,
+//       questions,
+//       answers,
+//       score,
+//       feedback,
+//       questionFeedback,
+//       finalized
+//     } = req.body;
+
+//     // ✅ Validate required fields
+//     if (!userId || !role || !level || !techStack || !type || !amount || !questions || !questions.length) {
+//       return res.status(400).json({ error: 'Missing required fields' });
+//     }
+
+//     const newInterview = new Interview({
+//       userId,
+//       role,
+//       level,
+//       techStack,
+//       type,
+//       amount,
+//       questions,
+//       answers: answers || [],             // default empty array if not provided
+//       score: score || 0,
+//       feedback: feedback || "",
+//       questionFeedback: questionFeedback || [],
+//       finalized: finalized || false
+//     });
+
+//     const savedInterview = await newInterview.save();
+//     res.status(201).json({
+//       message: 'Interview added successfully',
+//       interview: savedInterview
+//     });
+
+//   } catch (err) {
+//     console.error('Error creating interview:', err);
+//     res.status(500).json({ error: err.message });
+//   }
+// })

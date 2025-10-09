@@ -3,13 +3,9 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function InterviewPage() {
+
   const navigate = useNavigate();
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (!token) {
-      navigate("/signIn");
-    }
-  }, [navigate]);
+
 
   const user = JSON.parse(sessionStorage.getItem('user'));
   const userId = user._id;

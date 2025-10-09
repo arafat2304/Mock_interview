@@ -64,7 +64,7 @@ const About = () => {
           “Ready to test your interview skills? Start your mock interview now!”
         </h3>
         <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-2xl transition duration-300">
-          Start Interview
+          <a href="/interview-page">Start Interview</a>
         </button>
       </div>
     </section>
