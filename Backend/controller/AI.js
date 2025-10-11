@@ -85,19 +85,19 @@ module.exports.saved = async (req,res) => {
 }
 
 module.exports.evalution = async (req,res) =>{
-  console.log(req.body)
-  
-   try {
-  const { userId, questions, answers ,interviewId} = req.body;
+try {
+    const { userId, questions, answers, interviewId } = req.body;
 
-  if (!interviewId || !userId || !questions || !answers || questions.length !== answers.length) {
-    return res.status(400).json({ error: "Invalid input" });
-  }
+    // 🧩 Input validation
+    if (!interviewId || !userId || !questions || !answers || questions.length !== answers.length) {
+      return res.status(400).json({ error: "Invalid input" });
+    }
 
-  const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-001" });
+    // 🔹 Gemini AI model
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-001" });
 
-  // 🧠 Prompt for Gemini AI
-  const prompt = `
+    // 🧠 Prompt
+    const prompt = `
 You are an interview evaluator. Here are the questions and the user's answers:
 ${questions.map((q, i) => `Q${i + 1}: ${q}\nA${i + 1}: ${answers[i]}`).join("\n")}
 
@@ -110,67 +110,68 @@ Return ONLY a pure JSON object like this (no extra text or explanation):
   "overall_score": 85,
   "overall_feedback": "Good understanding, but needs more depth.",
   "questions": [
-    { "question": "Question text", "score": 9, "feedback": "Short feedback" }
+    { "question": "Question text", "answer": "Answer text", "score": 9, "feedback": "Short feedback" }
   ]
 }
 `;
 
-  // 🔹 Generate AI response
-  const aiResponse = await model.generateContent(prompt);
-  const aiText = aiResponse.response.text();
+    // 🔹 Get AI response
+    const aiResponse = await model.generateContent(prompt);
+    const aiText = aiResponse.response.text();
 
-  // 🧹 Clean the output before parsing
-  let cleanText = aiText
-    .replace(/```json/g, "")
-    .replace(/```/g, "")
-    .replace(/[\u0000-\u001F]+/g, "") // remove control chars
-    .trim();
+    // 🧹 Clean AI output
+    let cleanText = aiText
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .replace(/[\u0000-\u001F]+/g, "")
+      .trim();
 
-  // 🪄 Extract only the JSON portion using regex
-  const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
-  if (!jsonMatch) {
-    return res.status(500).json({
-      error: "No JSON object found in AI response",
-      raw: aiText,
-    });
-  }
+    const jsonMatch = cleanText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      return res.status(500).json({
+        error: "No JSON object found in AI response",
+        raw: aiText,
+      });
+    }
 
-  cleanText = jsonMatch[0];
+    cleanText = jsonMatch[0]
+      .replace(/,\s*}/g, "}")
+      .replace(/,\s*]/g, "]");
 
-  // 🩹 Try to fix common JSON issues (like trailing commas)
-  cleanText = cleanText
-    .replace(/,\s*}/g, "}") // remove trailing commas before }
-    .replace(/,\s*]/g, "]"); // remove trailing commas before ]
-
-  let evaluation;
-  try {
-    evaluation = JSON.parse(cleanText);
-    console.log("✅ Parsed Evaluation:", evaluation);
-  } catch (err) {
-    console.error("❌ Still invalid JSON after cleanup:", err);
-    return res.status(500).json({
-      error: "Invalid AI response format after cleanup",
-      raw: cleanText,
-    });
-  }
-  //  const latestInterview = await Interview.findById(interviewId);
-    
-  //  if (!latestInterview) {
-  //   return res.status(404).json({ error: "No interview found for this user" });
-  // }
+    // 🧩 Parse JSON
+    let evaluation;
+    try {
+      evaluation = JSON.parse(cleanText);
+      console.log("✅ Parsed Evaluation:", evaluation);
+    } catch (err) {
+      console.error("❌ Still invalid JSON after cleanup:", err);
+      return res.status(500).json({
+        error: "Invalid AI response format after cleanup",
+        raw: cleanText,
+      });
+    }
 
 
-// 🔹 Atomic update
-    const updatedInterview  = await Interview.findByIdAndUpdate(
-  interviewId,                  // document ID to update
-  {
-       // new array
-    score: 85,                  // updated score
-    feedback: "Good job!",      // updated feedback
-  },
-  { new: true, runValidators: true } // return updated document & validate
-);
 
+    // 🧮 Build questionFeedback array
+    const questionFeedback = (evaluation.questions || []).map((item, index) => ({
+      question: item.question || questions[index],
+      answer: item.answer || answers[index],
+      score: item.score || 0,
+      feedback: item.feedback || "",
+    }));
+
+    // 🔹 Update interview record
+    const updatedInterview = await Interview.findByIdAndUpdate(
+      interviewId,
+      {
+        score: evaluation.overall_score,
+        feedback: evaluation.overall_feedback,
+        questionFeedback: questionFeedback,
+        finalized: true,
+      },
+      { new: true, runValidators: true }
+    );
 
     if (!updatedInterview) {
       return res.status(404).json({ error: "Interview not found" });
@@ -179,22 +180,10 @@ Return ONLY a pure JSON object like this (no extra text or explanation):
     res.status(200).json({
       message: "Interview evaluation updated successfully",
       interview: updatedInterview,
-    })
+    });
 
-} catch (err) {
-  console.error("🔥 Server Error:", err);
-  res.status(500).json({ error: err.message });
-}
-
-
-}
-
-module.exports.interviews = async () =>{
-  const { userId } = req.query;
-  try {
-    const history = await Interview.find({ userId }).sort({ date: -1 });
-    res.json(history);
   } catch (err) {
+    console.error("🔥 Server Error:", err);
     res.status(500).json({ error: err.message });
   }
 }

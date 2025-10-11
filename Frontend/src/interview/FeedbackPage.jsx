@@ -5,7 +5,8 @@ const FeedbackPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const interview = location.state?.interview;
-  console.log(interview.interview)
+
+  console.log("🧠 Received interview data:", interview.interview);
 
   if (!interview) {
     return (
@@ -21,7 +22,7 @@ const FeedbackPage = () => {
     );
   }
 
-  const { score, feedback, questionFeedback = [] } = interview;
+  const { score = 0, feedback = "", questionFeedback = [] } = interview.interview;
 
   return (
     <div className="min-h-screen bg-gray-950 text-white py-12 px-6 md:px-16">
@@ -34,9 +35,11 @@ const FeedbackPage = () => {
         <div className="bg-gray-900 rounded-2xl shadow-lg p-6 text-center border border-gray-800">
           <h2 className="text-2xl font-semibold mb-2">
             Overall Score:{" "}
-            <span className="text-blue-400">{score || 0}/100</span>
+            <span className="text-blue-400">{score}/100</span>
           </h2>
-          <p className="text-gray-300">{feedback || "No overall feedback yet."}</p>
+          <p className="text-gray-300">
+            {feedback || "No overall feedback yet."}
+          </p>
         </div>
       </div>
 
@@ -51,23 +54,26 @@ const FeedbackPage = () => {
               <h3 className="text-lg font-semibold text-blue-400 mb-2">
                 Q{index + 1}: {item.question}
               </h3>
+
               <p className="text-gray-300 mb-2">
                 <span className="font-semibold text-green-400">
                   Your Answer:
                 </span>{" "}
-                {item.answer}
+                {item.answer || "No answer provided."}
               </p>
+
               <p className="text-gray-400 mb-2">
                 <span className="font-semibold text-yellow-400">
                   AI Score:
                 </span>{" "}
-                {item.score}/10
+                {item.score ?? "N/A"}/10
               </p>
+
               <p className="text-gray-300">
                 <span className="font-semibold text-purple-400">
                   Feedback:
                 </span>{" "}
-                {item.feedback}
+                {item.feedback || "No feedback provided."}
               </p>
             </div>
           ))

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ElevenLabsClient, play } from "@elevenlabs/elevenlabs-js";
 
 function Interview() {
   const location = useLocation();
@@ -8,34 +9,36 @@ function Interview() {
   const questions = location.state?.questions || [];
   const userId = location.state?.userId || "guest";
   const interviewId = location.state?.interviewId;
-  console.log(interviewId)
 
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [recording, setRecording] = useState(false);
   const [answers, setAnswers] = useState([]);
   const [currentTranscript, setCurrentTranscript] = useState("");
+  const [loadingRedirect, setLoadingRedirect] = useState(false);
 
   const audioRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  const ELEVEN_API_KEY = import.meta.env.VITE_ELEVEN_API_KEY;
-  const VOICE_ID = "21m00Tcm4TlvDq8ikWAM";
-
-  // Setup speech recognition
+  // Initialize ElevenLabs client
+  const elevenlabs = new ElevenLabsClient({
+    apiKey: import.meta.env.VITE_ELEVEN_API_KEY,
+  });
+  const VOICE_ID = import.meta.env.VITE_VOICE_ID;
+  // Setup Speech Recognition
   useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.lang = "en-US";
       recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
     } else {
-      alert("Speech Recognition not supported!");
+      alert("Speech Recognition not supported in this browser!");
     }
   }, []);
 
-  // Start recording user answer
   const startRecording = () => {
     if (!recognitionRef.current) return;
     setRecording(true);
@@ -60,7 +63,6 @@ function Interview() {
     };
   };
 
-  // Stop recording
   const stopRecording = () => {
     if (recognitionRef.current && recording) {
       recognitionRef.current.stop();
@@ -68,39 +70,25 @@ function Interview() {
     }
   };
 
-  // Play question via Eleven Labs
+  // Play question using Eleven Labs SDK
   const playQuestion = async (text) => {
     try {
       setIsSpeaking(true);
-      const res = await axios.post(
-        `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`,
-        {
-          text,
-          model_id: "eleven_multilingual_v2",
-          voice_settings: { stability: 0.5, similarity_boost: 0.75 },
-        },
-        {
-          headers: {
-            "xi-api-key": ELEVEN_API_KEY,
-            "Content-Type": "application/json",
-          },
-          responseType: "arraybuffer",
-        }
-      );
+      const audio = await elevenlabs.textToSpeech.convert(VOICE_ID, {
+        text,
+        modelId: "eleven_multilingual_v2", // or "eleven_turbo_v2"
+        outputFormat: "mp3_44100_128",
+      });
 
-      const audioBlob = new Blob([res.data], { type: "audio/mpeg" });
-      const audioURL = URL.createObjectURL(audioBlob);
-      if (audioRef.current) {
-        audioRef.current.src = audioURL;
-        audioRef.current.play();
-      }
+      await play(audio);
     } catch (err) {
-      console.error("Eleven Labs error:", err);
+      console.error("Error playing TTS audio:", err);
+    } finally {
       setIsSpeaking(false);
     }
   };
 
-  // Move to next question
+  // Handle next question or finish interview
   const handleNext = async () => {
     stopRecording();
 
@@ -109,14 +97,13 @@ function Interview() {
     newAnswers[currentQuestion] = currentAnswer;
     setAnswers(newAnswers);
 
-    // Save to backend
+    // Save answer to backend
     try {
       await axios.post(`http://localhost:5000/ai/answer`, {
         userId,
         question: questions[currentQuestion],
         answer: currentAnswer,
       });
-      console.log("Answer saved");
     } catch (err) {
       console.error("Error saving answer:", err);
     }
@@ -127,28 +114,48 @@ function Interview() {
       setCurrentTranscript("");
       playQuestion(questions[next]);
     } else {
-       try {
-    const res = await axios.post(`http://localhost:5000/ai/evaluate`, {
-      interviewId,
-      userId,
-      questions,
-      answers: [...answers, currentTranscript.trim()],
-    });
+      // Finish interview & evaluate
+      try {
+        setLoadingRedirect(true);
+        const res = await axios.post(`http://localhost:5000/ai/evaluate`, {
+          interviewId,
+          userId,
+          questions,
+          answers: [...answers, currentAnswer],
+        });
 
-      alert("Interview completed! ✅");
-    // Navigate to feedback page with AI evaluation
-    navigate("/feedback", { state: { interview: res.data } });
-  } catch (err) {
-    console.error("Error evaluating interview:", err);
-  }
+        setTimeout(() => {
+          navigate("/feedback", { state: { interview: res.data } });
+        }, 1500);
+      } catch (err) {
+        console.error("Error evaluating interview:", err);
+        setLoadingRedirect(false);
+      }
     }
   };
 
-  // Auto play first question
+  // Auto-play first question
   useEffect(() => {
     if (questions.length > 0) playQuestion(questions[0]);
     else navigate("/");
-  }, [questions, navigate]);
+  }, [questions]);
+
+  // Loading / redirect screen
+  if (loadingRedirect) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white flex-col">
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
+          alt="AI"
+          className="w-28 h-28 animate-bounce mb-4"
+        />
+        <h2 className="text-2xl font-semibold mb-2">Interview Completed! ✅</h2>
+        <p className="text-lg text-gray-300 animate-pulse">
+          Redirecting to Feedback Page...
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center text-white p-6">
@@ -163,24 +170,26 @@ function Interview() {
             className="w-35 h-35 rounded-full border-4 border-blue-500 shadow-md"
           />
           <p className="mt-2 text-lg font-semibold">AI Interviewer</p>
-          {isSpeaking && <p className="text-blue-400 mt-1 animate-pulse">Speaking...</p>}
+          {isSpeaking && (
+            <p className="text-blue-400 mt-1 animate-pulse">Speaking...</p>
+          )}
         </div>
 
-        {/* Main content */}
+        {/* Question & Answer */}
         <div className="flex-1 flex flex-col items-center w-full px-4">
-          {/* Question */}
           {questions.length > 0 && (
             <div className="bg-gray-700 p-4 rounded-xl shadow-inner w-full text-center mb-4">
               <p className="text-lg font-medium">
-                <strong>Question {currentQuestion + 1}:</strong> {questions[currentQuestion]}
+                <strong>Question {currentQuestion + 1}:</strong>{" "}
+                {questions[currentQuestion]}
               </p>
             </div>
           )}
-
-          {/* Answer */}
           <div className="bg-gray-600 p-4 rounded-xl shadow-inner w-full min-h-[100px] text-center">
             {recording ? (
-              <p className="text-green-300 text-lg">{currentTranscript || "🎙️ Listening..."}</p>
+              <p className="text-green-300 text-lg">
+                {currentTranscript || "🎙️ Listening..."}
+              </p>
             ) : (
               <p className="text-gray-300 text-lg">Your answer will appear here</p>
             )}
@@ -195,7 +204,9 @@ function Interview() {
             className="w-35 h-35 rounded-full border-4 border-green-500 shadow-md"
           />
           <p className="mt-2 text-lg font-semibold">You</p>
-          {recording && <p className="text-green-400 mt-1 animate-pulse">Speaking...</p>}
+          {recording && (
+            <p className="text-green-400 mt-1 animate-pulse">Speaking...</p>
+          )}
         </div>
       </div>
 
@@ -223,8 +234,6 @@ function Interview() {
           Next
         </button>
       </div>
-
-      <audio ref={audioRef} onEnded={() => setIsSpeaking(false)} />
     </div>
   );
 }
