@@ -7,10 +7,11 @@ import './App.css';
 import { Logout } from './auth/Logout';
 import About from "./components/About";
 import Navbar from './components/Navbar';
-import History from './components/History';
+import History from './interview/History';
 import InterviewPage from './interview/InterviewPage';
 import InterviewLanding from './interview/InterviewLanding';
 import FeedbackPage from './interview/FeedbackPage';
+import InterviewDetails from './interview/InterviewDetails';
 
 // PrivateRoute wrapper to protect pages
 function PrivateRoute({ children }) {
@@ -32,7 +33,14 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/about" element={<About />} />
-        <Route path="/history" element={<History />} />
+         <Route path="/history/:id" element={<InterviewDetails />} />
+        <Route 
+          path="/history" 
+          element={
+            <PrivateRoute>
+              <History />
+            </PrivateRoute>
+          } />
 
         {/* Protected routes */}
         <Route
