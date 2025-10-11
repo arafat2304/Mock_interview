@@ -189,52 +189,22 @@ Return ONLY a pure JSON object like this (no extra text or explanation):
 }
 
 
+module.exports.history = async (req,res) =>{
+   try {
+        const userId = req.query; // assuming you are using JWT auth
+        const interviews = await Interview.find({ userId:userId.userId }).sort({ createdAt: -1 });
+        res.json(interviews);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}
 
-// module.exports.add = async (req, res) => {
-//   try {
-//     const {
-//       userId,
-//       role,
-//       level,
-//       techStack,
-//       type,
-//       amount,
-//       questions,
-//       answers,
-//       score,
-//       feedback,
-//       questionFeedback,
-//       finalized
-//     } = req.body;
-
-//     // ✅ Validate required fields
-//     if (!userId || !role || !level || !techStack || !type || !amount || !questions || !questions.length) {
-//       return res.status(400).json({ error: 'Missing required fields' });
-//     }
-
-//     const newInterview = new Interview({
-//       userId,
-//       role,
-//       level,
-//       techStack,
-//       type,
-//       amount,
-//       questions,
-//       answers: answers || [],             // default empty array if not provided
-//       score: score || 0,
-//       feedback: feedback || "",
-//       questionFeedback: questionFeedback || [],
-//       finalized: finalized || false
-//     });
-
-//     const savedInterview = await newInterview.save();
-//     res.status(201).json({
-//       message: 'Interview added successfully',
-//       interview: savedInterview
-//     });
-
-//   } catch (err) {
-//     console.error('Error creating interview:', err);
-//     res.status(500).json({ error: err.message });
-//   }
-// })
+module.exports.interview = async (req,res) =>{
+   try {
+        const interview = await Interview.findById(req.params.id);
+        if (!interview) return res.status(404).json({ error: 'Interview not found' });
+        res.json(interview);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+}

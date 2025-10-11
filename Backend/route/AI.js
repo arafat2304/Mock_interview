@@ -10,5 +10,9 @@ router.post("/answer",authAI,AIController.saved);
 
 router.post("/evaluate",authAI,AIController.evalution);
 
+router.get("/history",AIController.history);
+
+router.get("/:id",AIController.interview);
+
 
 module.exports = router;

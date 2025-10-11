@@ -14,7 +14,10 @@ const PORT=5000;
 
 connectDB();
 app.use(cookieParser());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', // frontend origin
+  credentials: true                // allow cookies / credentials
+}));
 app.use(express.json());
 app.use('/upload', express.static('upload'));
 
