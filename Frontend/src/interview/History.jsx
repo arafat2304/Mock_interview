@@ -57,15 +57,11 @@ const History = () => {
 
               {/* Role & Level */}
               <h2 className="text-2xl font-bold text-white mb-2">{interview.role}</h2>
-              <p className="text-gray-300 mb-1"><strong>Level:</strong> {interview.level}</p>
+              <p className="text-gray-300 mb-1"><strong>Expirience:</strong> {interview.level} year</p>
               <p className="text-gray-300"><strong>Questions:</strong> {interview.questions?.length || 0}</p>
 
               {/* Footer badge */}
-              <div className="mt-4 flex justify-start gap-2">
-                <span className="bg-blue-500 text-white px-2 py-1 rounded-full text-xs font-medium">
-                  {interview.level}
-                </span>
-              </div>
+              
             </div>
           ))}
         </div>

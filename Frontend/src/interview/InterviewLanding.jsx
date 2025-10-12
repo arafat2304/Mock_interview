@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { ElevenLabsClient, play } from "@elevenlabs/elevenlabs-js";
 
 function Interview() {
   const location = useLocation();
@@ -17,14 +16,8 @@ function Interview() {
   const [currentTranscript, setCurrentTranscript] = useState("");
   const [loadingRedirect, setLoadingRedirect] = useState(false);
 
-  const audioRef = useRef(null);
   const recognitionRef = useRef(null);
 
-  // Initialize ElevenLabs client
-  const elevenlabs = new ElevenLabsClient({
-    apiKey: import.meta.env.VITE_ELEVEN_API_KEY,
-  });
-  const VOICE_ID = import.meta.env.VITE_VOICE_ID;
   // Setup Speech Recognition
   useEffect(() => {
     const SpeechRecognition =
@@ -70,25 +63,25 @@ function Interview() {
     }
   };
 
-  // Play question using Eleven Labs SDK
+  // Play question using backend-generated ElevenLabs audio
   const playQuestion = async (text) => {
     try {
+      if (!text) return;
       setIsSpeaking(true);
-      const audio = await elevenlabs.textToSpeech.convert(VOICE_ID, {
-        text,
-        modelId: "eleven_multilingual_v2", // or "eleven_turbo_v2"
-        outputFormat: "mp3_44100_128",
-      });
 
-      await play(audio);
+      const res = await axios.post("http://localhost:5000/tts", { text });
+      const base64 = res.data.audio;
+      const audioSrc = `data:audio/mpeg;base64,${base64}`;
+      const audio = new Audio(audioSrc);
+
+      audio.onended = () => setIsSpeaking(false);
+      await audio.play();
     } catch (err) {
       console.error("Error playing TTS audio:", err);
-    } finally {
       setIsSpeaking(false);
     }
   };
 
-  // Handle next question or finish interview
   const handleNext = async () => {
     stopRecording();
 
@@ -114,7 +107,6 @@ function Interview() {
       setCurrentTranscript("");
       playQuestion(questions[next]);
     } else {
-      // Finish interview & evaluate
       try {
         setLoadingRedirect(true);
         const res = await axios.post(`http://localhost:5000/ai/evaluate`, {
@@ -134,13 +126,11 @@ function Interview() {
     }
   };
 
-  // Auto-play first question
   useEffect(() => {
     if (questions.length > 0) playQuestion(questions[0]);
     else navigate("/");
   }, [questions]);
 
-  // Loading / redirect screen
   if (loadingRedirect) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white flex-col">
@@ -158,34 +148,31 @@ function Interview() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center text-white p-6">
-      <h1 className="text-3xl font-bold mb-6">AI Mock Interview</h1>
+    <div className="min-h-screen bg-gray-900 flex flex-col items-center justify-center text-white p-4 md:p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">AI Mock Interview</h1>
 
-      <div className="flex w-full max-w-5xl bg-gray-800 p-6 rounded-2xl shadow-lg items-start gap-4">
-        {/* AI Image */}
-        <div className="flex flex-col items-center w-1/4 flex-shrink-0 mt-7">
+      <div className="flex flex-col md:flex-row w-full max-w-5xl bg-gray-800 p-4 md:p-6 rounded-2xl shadow-lg gap-6">
+        {/* AI Panel */}
+        <div className="flex flex-col items-center md:w-1/4">
           <img
             src="https://cdn-icons-png.flaticon.com/512/4712/4712035.png"
             alt="AI"
-            className="w-35 h-35 rounded-full border-4 border-blue-500 shadow-md"
+            className="w-24 h-24 md:w-35 md:h-35 rounded-full border-4 border-blue-500 shadow-md"
           />
           <p className="mt-2 text-lg font-semibold">AI Interviewer</p>
-          {isSpeaking && (
-            <p className="text-blue-400 mt-1 animate-pulse">Speaking...</p>
-          )}
+          {isSpeaking && <p className="text-blue-400 mt-1 animate-pulse">Speaking...</p>}
         </div>
 
-        {/* Question & Answer */}
-        <div className="flex-1 flex flex-col items-center w-full px-4">
+        {/* QA Panel */}
+        <div className="flex-1 flex flex-col items-center w-full md:px-4">
           {questions.length > 0 && (
             <div className="bg-gray-700 p-4 rounded-xl shadow-inner w-full text-center mb-4">
               <p className="text-lg font-medium">
-                <strong>Question {currentQuestion + 1}:</strong>{" "}
-                {questions[currentQuestion]}
+                <strong>Question {currentQuestion + 1}:</strong> {questions[currentQuestion]}
               </p>
             </div>
           )}
-          <div className="bg-gray-600 p-4 rounded-xl shadow-inner w-full min-h-[100px] text-center">
+          <div className="bg-gray-600 p-4 rounded-xl shadow-inner w-full min-h-[120px] text-center">
             {recording ? (
               <p className="text-green-300 text-lg">
                 {currentTranscript || "🎙️ Listening..."}
@@ -196,25 +183,23 @@ function Interview() {
           </div>
         </div>
 
-        {/* User Image */}
-        <div className="flex flex-col items-center w-1/4 flex-shrink-0 mt-7">
+        {/* User Panel */}
+        <div className="flex flex-col items-center md:w-1/4">
           <img
             src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
             alt="User"
-            className="w-35 h-35 rounded-full border-4 border-green-500 shadow-md"
+            className="w-24 h-24 md:w-35 md:h-35 rounded-full border-4 border-green-500 shadow-md"
           />
           <p className="mt-2 text-lg font-semibold">You</p>
-          {recording && (
-            <p className="text-green-400 mt-1 animate-pulse">Speaking...</p>
-          )}
+          {recording && <p className="text-green-400 mt-1 animate-pulse">Speaking...</p>}
         </div>
       </div>
 
       {/* Controls */}
-      <div className="flex gap-4 mt-6">
+      <div className="flex flex-col sm:flex-row gap-4 mt-6 w-full max-w-5xl justify-center">
         <button
           onClick={() => playQuestion(questions[currentQuestion])}
-          className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold transition"
+          className="bg-blue-500 hover:bg-blue-600 px-6 py-3 rounded-lg font-semibold transition w-full sm:w-auto"
         >
           Play Question
         </button>
@@ -222,14 +207,14 @@ function Interview() {
         <button
           onClick={startRecording}
           disabled={recording}
-          className="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-lg font-semibold transition"
+          className="bg-yellow-500 hover:bg-yellow-600 px-6 py-3 rounded-lg font-semibold transition w-full sm:w-auto"
         >
           Start Answer
         </button>
 
         <button
           onClick={handleNext}
-          className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg font-semibold transition"
+          className="bg-green-500 hover:bg-green-600 px-6 py-3 rounded-lg font-semibold transition w-full sm:w-auto"
         >
           Next
         </button>

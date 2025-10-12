@@ -22,7 +22,8 @@ const FeedbackPage = () => {
     );
   }
 
-  const { score = 0, feedback = "", questionFeedback = [] } = interview.interview;
+  const { score = 0, feedback = "", questionFeedback = [], aiAnswers = [] } =
+    interview.interview;
 
   return (
     <div className="min-h-screen bg-gray-950 text-white py-12 px-6 md:px-16">
@@ -34,12 +35,9 @@ const FeedbackPage = () => {
 
         <div className="bg-gray-900 rounded-2xl shadow-lg p-6 text-center border border-gray-800">
           <h2 className="text-2xl font-semibold mb-2">
-            Overall Score:{" "}
-            <span className="text-blue-400">{score}/100</span>
+            Overall Score: <span className="text-blue-400">{score}/100</span>
           </h2>
-          <p className="text-gray-300">
-            {feedback || "No overall feedback yet."}
-          </p>
+          <p className="text-gray-300">{feedback || "No overall feedback yet."}</p>
         </div>
       </div>
 
@@ -56,23 +54,25 @@ const FeedbackPage = () => {
               </h3>
 
               <p className="text-gray-300 mb-2">
-                <span className="font-semibold text-green-400">
-                  Your Answer:
-                </span>{" "}
+                <span className="font-semibold text-green-400">Your Answer:</span>{" "}
                 {item.answer || "No answer provided."}
               </p>
 
+              {/* AI Generated Answer */}
+              {aiAnswers[index] && (
+                <p className="text-gray-300 mb-2">
+                  <span className="font-semibold text-purple-400">AI Answer:</span>{" "}
+                  {aiAnswers[index]}
+                </p>
+              )}
+
               <p className="text-gray-400 mb-2">
-                <span className="font-semibold text-yellow-400">
-                  AI Score:
-                </span>{" "}
+                <span className="font-semibold text-yellow-400">AI Score:</span>{" "}
                 {item.score ?? "N/A"}/10
               </p>
 
               <p className="text-gray-300">
-                <span className="font-semibold text-purple-400">
-                  Feedback:
-                </span>{" "}
+                <span className="font-semibold text-purple-400">Feedback:</span>{" "}
                 {item.feedback || "No feedback provided."}
               </p>
             </div>

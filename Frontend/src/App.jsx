@@ -12,6 +12,7 @@ import InterviewPage from './interview/InterviewPage';
 import InterviewLanding from './interview/InterviewLanding';
 import FeedbackPage from './interview/FeedbackPage';
 import InterviewDetails from './interview/InterviewDetails';
+import Contact from './components/Contact';
 
 // PrivateRoute wrapper to protect pages
 function PrivateRoute({ children }) {
@@ -20,7 +21,6 @@ function PrivateRoute({ children }) {
 }
 
 function App() {
-  const [count, setCount] = useState(0);
 
   return (
     <>
@@ -33,7 +33,8 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/logout" element={<Logout />} />
         <Route path="/about" element={<About />} />
-         <Route path="/history/:id" element={<InterviewDetails />} />
+        <Route path="/history/:id" element={<InterviewDetails />} />
+        <Route path="/contact" element={<Contact/>} />
         <Route 
           path="/history" 
           element={

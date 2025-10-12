@@ -22,7 +22,7 @@ const Navbar = () => {
         <li><a href="/home" className="hover:text-blue-400 transition">Home</a></li>
         <li><a href="/about" className="hover:text-blue-400 transition">About</a></li>
         <li><a href="/history" className="hover:text-blue-400 transition">History</a></li>
-        <li className="hover:text-blue-400 transition">Contact</li>
+        <li><a className="hover:text-blue-400 transition" href="/contact">Contact</a></li>
       </ul>
 
       <div className="flex items-center space-x-4">
@@ -53,7 +53,7 @@ const Navbar = () => {
           <li><a href="/home" className="hover:text-blue-400 transition">Home</a></li>
           <li><a href="/about" className="hover:text-blue-400 transition">About</a></li>
           <li><a href="/history" className="hover:text-blue-400 transition">History</a></li>
-          <li className="hover:text-blue-400 transition">Contact</li>
+           <li><a className="hover:text-blue-400 transition" href="/contact">Contact</a></li>
           {isLoggedIn ? (
             <li>
               <button onClick={handleLogout} className="hover:text-red-400 transition">
