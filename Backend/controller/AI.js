@@ -23,18 +23,27 @@ module.exports.generate = async (req, res) => {
                   The tech stack used in the job is ${techStack}.
                   The focus between behavioral and technical questions should lean towards: ${type}.
                   The amount of questions required is ${questionCount}.
-                  Please return only questions, without any additional text.
+                  Please return  questions and also generate there answer , without any additional text.
                   The questions are going to be read by a voice assistant so do not use "/" or "*" or any other special characters which might break the voice system.
-                  Return the questions formatted like this:
-                  ["Question 1","Question 2", "Question 3", ...]
+                  Return the questions and answer formatted like this:
+                  Return a JSON object ONLY in this format:
+
+                {
+                     "questions": ["Question 1","Question 2", ...],
+                      "answers": ["Answer 1","Answer 2", ...]
+                }
+                  
 
                   Thank you! <3`;
 
   try {
     const result = await model.generateContent(prompt);
     const rawText = result.response.candidates[0].content.parts[0].text;
-    const questions = JSON.parse(rawText);
-    
+    let cleanText = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+    const data = JSON.parse(cleanText);
+    const questions = data.questions;
+    const aiAnswers = data.answers;
+    console.log(questions,aiAnswers)
 
     const interview = new Interview({
       userId,
@@ -44,12 +53,13 @@ module.exports.generate = async (req, res) => {
       type,
       amount:questionCount,
       questions,
+      aiAnswers,
       createdAt: new Date(),
       finalized: false
     });
 
     await interview.save();
-   await interview.save();
+
 res.status(201).json({success: true, message: "Interview questions saved successfully.", questions,interviewId:interview._id});
 
   } catch (error) {

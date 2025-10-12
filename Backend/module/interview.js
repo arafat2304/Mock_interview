@@ -15,6 +15,7 @@ const interviewSchema = new mongoose.Schema({
   amount: { type: Number, required: true },
 
   questions: { type: [String], required: true },
+  aiAnswers:{type:[String],required:true},
   answers: { type: [String], default: [] },
 
   score: { type: Number, default: 0 },
