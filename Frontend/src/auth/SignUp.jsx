@@ -19,7 +19,7 @@ export const SignUp = () => {
 
   const register = async ()=>{
     try{
-      const response = await axios.post(`${import.meta.env.VITE_Backend_URL}/user/register`,{
+      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/user/register`,{
         name,
         email,
         password,

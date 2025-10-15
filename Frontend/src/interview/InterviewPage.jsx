@@ -35,7 +35,7 @@ function InterviewPage() {
       alert("Please fill all fields!") 
     }else{
       try{
-        const response =await  axios.post("http://localhost:5000/ai/generate",{
+        const response =await  axios.post(`${import.meta.env.VITE_BACKEND_URL}/ai/generate`,{
           formData,
           userId
         })

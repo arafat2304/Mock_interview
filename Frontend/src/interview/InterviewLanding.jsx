@@ -69,7 +69,7 @@ function Interview() {
       if (!text) return;
       setIsSpeaking(true);
 
-      const res = await axios.post("http://localhost:5000/tts", { text });
+      const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/tts`, { text });
       const base64 = res.data.audio;
       const audioSrc = `data:audio/mpeg;base64,${base64}`;
       const audio = new Audio(audioSrc);
@@ -92,7 +92,7 @@ function Interview() {
 
     // Save answer to backend
     try {
-      await axios.post(`http://localhost:5000/ai/answer`, {
+      await axios.post(`${import.meta.env.VITE_BACKEND_URL}/ai/answer`, {
         userId,
         question: questions[currentQuestion],
         answer: currentAnswer,
@@ -109,7 +109,7 @@ function Interview() {
     } else {
       try {
         setLoadingRedirect(true);
-        const res = await axios.post(`http://localhost:5000/ai/evaluate`, {
+        const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/ai/evaluate`, {
           interviewId,
           userId,
           questions,

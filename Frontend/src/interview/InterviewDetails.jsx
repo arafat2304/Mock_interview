@@ -10,7 +10,7 @@ const InterviewDetail = () => {
   useEffect(() => {
     const fetchInterview = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/ai/${id}`, {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/ai/${id}`, {
           withCredentials: true,
         });
         setInterview(res.data);

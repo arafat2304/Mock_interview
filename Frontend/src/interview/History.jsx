@@ -12,7 +12,7 @@ const History = () => {
   useEffect(() => {
     const fetchHistory = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/ai/history?userId=${userId}`, {
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/ai/history?userId=${userId}`, {
           withCredentials: true
         });
         if (Array.isArray(res.data)) setInterviews(res.data);
