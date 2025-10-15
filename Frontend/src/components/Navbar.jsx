@@ -22,7 +22,7 @@ const Navbar = () => {
         <li><a href="/home" className="hover:text-blue-400 transition">Home</a></li>
         <li><a href="/about" className="hover:text-blue-400 transition">About</a></li>
         <li><a href="/history" className="hover:text-blue-400 transition">History</a></li>
-        <li><a className="hover:text-blue-400 transition" href="/contact">Contact</a></li>
+        <li><a href="/contact" className="hover:text-blue-400 transition">Contact</a></li>
       </ul>
 
       <div className="flex items-center space-x-4">
@@ -34,26 +34,37 @@ const Navbar = () => {
             Logout
           </button>
         ) : (
-          <button className="hidden md:block px-5 py-2 rounded-xl bg-transparent border border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white transition">
-            <a href="/signIn">Login</a>
-          </button>
+          <>
+            {/* Login Button */}
+            <button className="hidden md:block px-5 py-2 rounded-xl bg-transparent border border-blue-400 text-blue-400 hover:bg-blue-400 hover:text-white transition">
+              <a href="/signIn">Login</a>
+            </button>
+
+            {/* ✅ Register Button */}
+            <button className="hidden md:block px-5 py-2 rounded-xl bg-transparent border border-green-400 text-green-400 hover:bg-green-400 hover:text-white transition">
+              <a href="/signup">Register</a>
+            </button>
+          </>
         )}
 
         <button className="hidden md:block px-5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 transition font-semibold">
           <a href="/interview-page">Start Interview</a>
         </button>
 
+        {/* Mobile Menu Button */}
         <div className="md:hidden ml-2">
           <button onClick={() => setOpen(!open)}>{open ? "✖️" : "☰"}</button>
         </div>
       </div>
 
+      {/* Mobile Dropdown Menu */}
       {open && (
         <ul className="absolute top-full left-0 w-full bg-gray-900 flex flex-col text-center space-y-4 py-4 md:hidden">
           <li><a href="/home" className="hover:text-blue-400 transition">Home</a></li>
           <li><a href="/about" className="hover:text-blue-400 transition">About</a></li>
           <li><a href="/history" className="hover:text-blue-400 transition">History</a></li>
-           <li><a className="hover:text-blue-400 transition" href="/contact">Contact</a></li>
+          <li><a href="/contact" className="hover:text-blue-400 transition">Contact</a></li>
+
           {isLoggedIn ? (
             <li>
               <button onClick={handleLogout} className="hover:text-red-400 transition">
@@ -61,11 +72,11 @@ const Navbar = () => {
               </button>
             </li>
           ) : (
-            <li>
-              <a href="/signIn" className="hover:text-blue-400 transition">
-                Login
-              </a>
-            </li>
+            <>
+              <li><a href="/signIn" className="hover:text-blue-400 transition">Login</a></li>
+              {/* ✅ Register added in Mobile Menu */}
+              <li><a href="/signup" className="hover:text-green-400 transition">Register</a></li>
+            </>
           )}
         </ul>
       )}

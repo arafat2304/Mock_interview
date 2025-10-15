@@ -14,7 +14,7 @@ export const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post(`${import.meta.VITE_BACKEND_URL}/user/login`, {
+      const response = await axios.post(`https://ai-mock-interview-backend-cs6x.onrender.com/user/login`, {
         email,
         password,
       });
