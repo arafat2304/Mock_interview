@@ -15,7 +15,6 @@ const PORT=5000;
 connectDB();
 app.use(cookieParser());
 app.use(cors({
-  origin: 'https://mock-interview-mu-mocha.vercel.app/', // frontend origin
   credentials: true                // allow cookies / credentials
 }));
 app.use(express.json());
