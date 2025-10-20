@@ -23,14 +23,13 @@ app.post("/tts",async (req,res)=>{
     const { text } = req.body;
     if (!text) return res.status(400).json({ error: "Text is required" });
 
-    const apiKey = process.env.ELEVEN_LABS_API_KEY;
-    console.log(apiKey)
-    if (!apiKey) return res.status(500).json({ error: "Missing ElevenLabs API key" });
+    const apiKey = be072ff438867af3131336a27786575016245caccb4a98558bc7b5a3a0b476f8;
 
-    const voiceId = process.env.VOICE_ID; // Replace with your ElevenLabs voice ID
+    if (!apiKey) return res.status(500).json({ error: "Missing ElevenLabs API key" });
+ // Replace with your ElevenLabs voice ID
 
     const response = await axios.post(
-      `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+      `https://api.elevenlabs.io/v1/text-to-speech/2EiwWnXFnvU5JabPnv8n`,
       {
         text,
         model_id: "eleven_multilingual_v2",
