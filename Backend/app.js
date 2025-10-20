@@ -14,9 +14,7 @@ const PORT=5000;
 
 connectDB();
 app.use(cookieParser());
-app.use(cors({
-  credentials: true                // allow cookies / credentials
-}));
+app.use(cors());
 app.use(express.json());
 app.use('/upload', express.static('upload'));
 
