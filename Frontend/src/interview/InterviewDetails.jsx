@@ -10,9 +10,7 @@ const InterviewDetail = () => {
   useEffect(() => {
     const fetchInterview = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/ai/${id}`, {
-          withCredentials: true,
-        });
+        const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/ai/${id}`);
         setInterview(res.data);
       } catch (err) {
         console.error(err);

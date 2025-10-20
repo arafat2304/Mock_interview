@@ -13,7 +13,6 @@ const History = () => {
     const fetchHistory = async () => {
       try {
         const res = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/ai/history?userId=${userId}`, {
-          withCredentials: true
         });
         if (Array.isArray(res.data)) setInterviews(res.data);
         else setInterviews([]);
